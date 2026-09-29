@@ -1,0 +1,716 @@
+                                                                          Table "video_rental_3nf.customer"
+      Column       |          Type          | Collation | Nullable |           Default            | Storage  | Compression | Stats target |                Description                
+-------------------+------------------------+-----------+----------+------------------------------+----------+-------------+--------------+-------------------------------------------
+ customer_id       | integer                |           | not null | generated always as identity | plain    |             |              | 
+ card_number       | character varying(12)  |           | not null |                              | extended |             |              | Номер клубной карты (бизнес-ключ)
+ last_name         | character varying(60)  |           | not null |                              | extended |             |              | 
+ first_name        | character varying(60)  |           | not null |                              | extended |             |              | 
+ middle_name       | character varying(60)  |           |          |                              | extended |             |              | 
+ phone             | character varying(20)  |           | not null |                              | extended |             |              | 
+ email             | character varying(120) |           |          |                              | extended |             |              | 
+ birth_date        | date                   |           |          |                              | plain    |             |              | 
+ address           | character varying(200) |           |          |                              | extended |             |              | 
+ registration_date | date                   |           | not null | lab."current_date"()         | plain    |             |              | 
+ status            | character varying(10)  |           | not null | 'active'::character varying  | extended |             |              | Статус клиента: active, blocked, archived
+Indexes:
+    "pk_customer" PRIMARY KEY, btree (customer_id)
+    "ix_customer_name" btree (last_name, first_name)
+    "uq_customer_card_number" UNIQUE CONSTRAINT, btree (card_number)
+    "uq_customer_email" UNIQUE CONSTRAINT, btree (email)
+    "uq_customer_phone" UNIQUE CONSTRAINT, btree (phone)
+Check constraints:
+    "ck_customer_birth_date" CHECK (birth_date IS NULL OR birth_date < registration_date)
+    "ck_customer_card_number" CHECK (card_number::text ~ '^CR-[0-9]{5}$'::text)
+    "ck_customer_email" CHECK (email IS NULL OR email::text ~ '^[^@[:space:]]+@[^@[:space:]]+\.[A-Za-z]{2,}$'::text)
+    "ck_customer_phone" CHECK (phone::text ~ '^\+7[0-9]{10}$'::text)
+    "ck_customer_status" CHECK (status::text = ANY (ARRAY['active'::character varying, 'blocked'::character varying, 'archived'::character varying]::text[]))
+Referenced by:
+    TABLE "video_rental_3nf.rental" CONSTRAINT "fk_rental_customer" FOREIGN KEY (customer_id) REFERENCES video_rental_3nf.customer(customer_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Access method: heap
+
+         Sequence "video_rental_3nf.customer_customer_id_seq"
+  Type   | Start | Minimum |  Maximum   | Increment | Cycles? | Cache 
+---------+-------+---------+------------+-----------+---------+-------
+ integer |     1 |       1 | 2147483647 |         1 | no      |     1
+Sequence for identity column: video_rental_3nf.customer.customer_id
+
+                                                                                Table "video_rental_3nf.employee"
+      Column      |         Type          | Collation | Nullable |           Default            | Storage  | Compression | Stats target |                       Description                       
+------------------+-----------------------+-----------+----------+------------------------------+----------+-------------+--------------+---------------------------------------------------------
+ employee_id      | integer               |           | not null | generated always as identity | plain    |             |              | 
+ personnel_number | character varying(10) |           | not null |                              | extended |             |              | Табельный номер (бизнес-ключ)
+ last_name        | character varying(60) |           | not null |                              | extended |             |              | 
+ first_name       | character varying(60) |           | not null |                              | extended |             |              | 
+ middle_name      | character varying(60) |           |          |                              | extended |             |              | 
+ position         | character varying(40) |           | not null |                              | extended |             |              | Должность: administrator, cashier, storekeeper, manager
+ phone            | character varying(20) |           | not null |                              | extended |             |              | 
+ hire_date        | date                  |           | not null |                              | plain    |             |              | 
+ dismissal_date   | date                  |           |          |                              | plain    |             |              | 
+ status           | character varying(10) |           | not null | 'active'::character varying  | extended |             |              | 
+Indexes:
+    "pk_employee" PRIMARY KEY, btree (employee_id)
+    "uq_employee_personnel_number" UNIQUE CONSTRAINT, btree (personnel_number)
+    "uq_employee_phone" UNIQUE CONSTRAINT, btree (phone)
+Check constraints:
+    "ck_employee_dates" CHECK (dismissal_date IS NULL OR dismissal_date >= hire_date)
+    "ck_employee_personnel_number" CHECK (personnel_number::text ~ '^EMP-[0-9]{4}$'::text)
+    "ck_employee_position" CHECK ("position"::text = ANY (ARRAY['administrator'::character varying, 'cashier'::character varying, 'storekeeper'::character varying, 'manager'::character varying]::text[]))
+    "ck_employee_status" CHECK (status::text = ANY (ARRAY['active'::character varying, 'dismissed'::character varying]::text[]))
+    "ck_employee_status_dismissal" CHECK ((status::text = 'dismissed'::text) = (dismissal_date IS NOT NULL))
+Referenced by:
+    TABLE "video_rental_3nf.rental" CONSTRAINT "fk_rental_employee" FOREIGN KEY (employee_id) REFERENCES video_rental_3nf.employee(employee_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Access method: heap
+
+         Sequence "video_rental_3nf.employee_employee_id_seq"
+  Type   | Start | Minimum |  Maximum   | Increment | Cycles? | Cache 
+---------+-------+---------+------------+-----------+---------+-------
+ integer |     1 |       1 | 2147483647 |         1 | no      |     1
+Sequence for identity column: video_rental_3nf.employee.employee_id
+
+                                                                         Table "video_rental_3nf.film"
+     Column     |          Type           | Collation | Nullable |           Default            | Storage  | Compression | Stats target |              Description              
+----------------+-------------------------+-----------+----------+------------------------------+----------+-------------+--------------+---------------------------------------
+ film_id        | integer                 |           | not null | generated always as identity | plain    |             |              | 
+ catalog_number | character varying(16)   |           | not null |                              | extended |             |              | Каталожный номер фильма (бизнес-ключ)
+ title          | character varying(200)  |           | not null |                              | extended |             |              | 
+ original_title | character varying(200)  |           |          |                              | extended |             |              | 
+ release_year   | smallint                |           | not null |                              | plain    |             |              | 
+ duration_min   | smallint                |           | not null |                              | plain    |             |              | 
+ age_rating     | character varying(8)    |           | not null |                              | extended |             |              | 
+ media_type     | character varying(10)   |           | not null |                              | extended |             |              | Носитель: VHS, DVD, Blu-ray
+ tariff_id      | integer                 |           | not null |                              | plain    |             |              | Действующий тариф проката фильма
+ synopsis       | character varying(1000) |           |          |                              | extended |             |              | 
+ added_on       | date                    |           | not null | lab."current_date"()         | plain    |             |              | 
+Indexes:
+    "pk_film" PRIMARY KEY, btree (film_id)
+    "uq_film_catalog_number" UNIQUE CONSTRAINT, btree (catalog_number)
+    "uq_film_title_year" UNIQUE CONSTRAINT, btree (title, release_year, media_type)
+Check constraints:
+    "ck_film_age_rating" CHECK (age_rating::text = ANY (ARRAY['0+'::character varying, '6+'::character varying, '12+'::character varying, '16+'::character varying, '18+'::character varying]::text[]))
+    "ck_film_catalog_number" CHECK (catalog_number::text ~ '^FM-[0-9]{4}$'::text)
+    "ck_film_duration" CHECK (duration_min >= 1 AND duration_min <= 600)
+    "ck_film_media_type" CHECK (media_type::text = ANY (ARRAY['VHS'::character varying, 'DVD'::character varying, 'Blu-ray'::character varying]::text[]))
+    "ck_film_release_year" CHECK (release_year >= 1895 AND release_year <= 2100)
+Foreign-key constraints:
+    "fk_film_tariff" FOREIGN KEY (tariff_id) REFERENCES video_rental_3nf.tariff(tariff_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Referenced by:
+    TABLE "video_rental_3nf.film_genre" CONSTRAINT "fk_film_genre_film" FOREIGN KEY (film_id) REFERENCES video_rental_3nf.film(film_id) ON UPDATE CASCADE ON DELETE CASCADE
+    TABLE "video_rental_3nf.video_copy" CONSTRAINT "fk_video_copy_film" FOREIGN KEY (film_id) REFERENCES video_rental_3nf.film(film_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Access method: heap
+
+             Sequence "video_rental_3nf.film_film_id_seq"
+  Type   | Start | Minimum |  Maximum   | Increment | Cycles? | Cache 
+---------+-------+---------+------------+-----------+---------+-------
+ integer |     1 |       1 | 2147483647 |         1 | no      |     1
+Sequence for identity column: video_rental_3nf.film.film_id
+
+                                                           Table "video_rental_3nf.film_genre"
+   Column   |  Type   | Collation | Nullable | Default | Storage | Compression | Stats target |                        Description                        
+------------+---------+-----------+----------+---------+---------+-------------+--------------+-----------------------------------------------------------
+ film_id    | integer |           | not null |         | plain   |             |              | 
+ genre_id   | integer |           | not null |         | plain   |             |              | 
+ is_primary | boolean |           | not null | false   | plain   |             |              | Признак основного жанра фильма (не более одного на фильм)
+Indexes:
+    "pk_film_genre" PRIMARY KEY, btree (film_id, genre_id)
+    "ix_film_genre_genre" btree (genre_id)
+    "ux_film_genre_primary" UNIQUE, btree (film_id) WHERE is_primary
+Foreign-key constraints:
+    "fk_film_genre_film" FOREIGN KEY (film_id) REFERENCES video_rental_3nf.film(film_id) ON UPDATE CASCADE ON DELETE CASCADE
+    "fk_film_genre_genre" FOREIGN KEY (genre_id) REFERENCES video_rental_3nf.genre(genre_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Access method: heap
+
+                                                                    Table "video_rental_3nf.genre"
+   Column    |          Type          | Collation | Nullable |           Default            | Storage  | Compression | Stats target |           Description            
+-------------+------------------------+-----------+----------+------------------------------+----------+-------------+--------------+----------------------------------
+ genre_id    | integer                |           | not null | generated always as identity | plain    |             |              | Суррогатный первичный ключ жанра
+ code        | character varying(12)  |           | not null |                              | extended |             |              | Краткий код жанра (бизнес-ключ)
+ name        | character varying(60)  |           | not null |                              | extended |             |              | Название жанра
+ description | character varying(300) |           |          |                              | extended |             |              | 
+Indexes:
+    "pk_genre" PRIMARY KEY, btree (genre_id)
+    "uq_genre_code" UNIQUE CONSTRAINT, btree (code)
+    "uq_genre_name" UNIQUE CONSTRAINT, btree (name)
+Check constraints:
+    "ck_genre_code" CHECK (code::text ~ '^[A-Z0-9_]{2,12}$'::text)
+Referenced by:
+    TABLE "video_rental_3nf.film_genre" CONSTRAINT "fk_film_genre_genre" FOREIGN KEY (genre_id) REFERENCES video_rental_3nf.genre(genre_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Access method: heap
+
+            Sequence "video_rental_3nf.genre_genre_id_seq"
+  Type   | Start | Minimum |  Maximum   | Increment | Cycles? | Cache 
+---------+-------+---------+------------+-----------+---------+-------
+ integer |     1 |       1 | 2147483647 |         1 | no      |     1
+Sequence for identity column: video_rental_3nf.genre.genre_id
+
+                    Index "video_rental_3nf.ix_customer_name"
+   Column   |         Type          | Key? | Definition | Storage  | Stats target 
+------------+-----------------------+------+------------+----------+--------------
+ last_name  | character varying(60) | yes  | last_name  | extended | 
+ first_name | character varying(60) | yes  | first_name | extended | 
+btree, for table "video_rental_3nf.customer"
+
+          Index "video_rental_3nf.ix_film_genre_genre"
+  Column  |  Type   | Key? | Definition | Storage | Stats target 
+----------+---------+------+------------+---------+--------------
+ genre_id | integer | yes  | genre_id   | plain   | 
+btree, for table "video_rental_3nf.film_genre"
+
+                         Index "video_rental_3nf.ix_payment_date"
+    Column    |            Type             | Key? |  Definition  | Storage | Stats target 
+--------------+-----------------------------+------+--------------+---------+--------------
+ payment_date | timestamp without time zone | yes  | payment_date | plain   | 
+btree, for table "video_rental_3nf.payment"
+
+            Index "video_rental_3nf.ix_payment_rental"
+  Column   |  Type   | Key? | Definition | Storage | Stats target 
+-----------+---------+------+------------+---------+--------------
+ rental_id | integer | yes  | rental_id  | plain   | 
+btree, for table "video_rental_3nf.payment"
+
+             Index "video_rental_3nf.ix_rental_customer"
+   Column    |  Type   | Key? | Definition  | Storage | Stats target 
+-------------+---------+------+-------------+---------+--------------
+ customer_id | integer | yes  | customer_id | plain   | 
+btree, for table "video_rental_3nf.rental"
+
+             Index "video_rental_3nf.ix_rental_employee"
+   Column    |  Type   | Key? | Definition  | Storage | Stats target 
+-------------+---------+------+-------------+---------+--------------
+ employee_id | integer | yes  | employee_id | plain   | 
+btree, for table "video_rental_3nf.rental"
+
+          Index "video_rental_3nf.ix_rental_item_copy"
+ Column  |  Type   | Key? | Definition | Storage | Stats target 
+---------+---------+------+------------+---------+--------------
+ copy_id | integer | yes  | copy_id    | plain   | 
+btree, for table "video_rental_3nf.rental_item"
+
+          Index "video_rental_3nf.ix_rental_item_rental"
+  Column   |  Type   | Key? | Definition | Storage | Stats target 
+-----------+---------+------+------------+---------+--------------
+ rental_id | integer | yes  | rental_id  | plain   | 
+btree, for table "video_rental_3nf.rental_item"
+
+                Index "video_rental_3nf.ix_rental_planned_return"
+       Column        | Type | Key? |     Definition      | Storage | Stats target 
+---------------------+------+------+---------------------+---------+--------------
+ planned_return_date | date | yes  | planned_return_date | plain   | 
+btree, for table "video_rental_3nf.rental"
+
+                  Index "video_rental_3nf.ix_rental_status"
+ Column |         Type          | Key? | Definition | Storage  | Stats target 
+--------+-----------------------+------+------------+----------+--------------
+ status | character varying(12) | yes  | status     | extended | 
+btree, for table "video_rental_3nf.rental"
+
+                Index "video_rental_3nf.ix_video_copy_condition"
+  Column   |         Type          | Key? | Definition | Storage  | Stats target 
+-----------+-----------------------+------+------------+----------+--------------
+ condition | character varying(12) | yes  | condition  | extended | 
+btree, for table "video_rental_3nf.video_copy"
+
+          Index "video_rental_3nf.ix_video_copy_film"
+ Column  |  Type   | Key? | Definition | Storage | Stats target 
+---------+---------+------+------------+---------+--------------
+ film_id | integer | yes  | film_id    | plain   | 
+btree, for table "video_rental_3nf.video_copy"
+
+                                                                                         Table "video_rental_3nf.payment"
+     Column     |            Type             | Collation | Nullable |           Default            | Storage  | Compression | Stats target |                             Description                             
+----------------+-----------------------------+-----------+----------+------------------------------+----------+-------------+--------------+---------------------------------------------------------------------
+ payment_id     | integer                     |           | not null | generated always as identity | plain    |             |              | 
+ payment_number | character varying(12)       |           | not null |                              | extended |             |              | 
+ rental_id      | integer                     |           | not null |                              | plain    |             |              | 
+ payment_date   | timestamp without time zone |           | not null | lab.now()                    | plain    |             |              | 
+ amount         | numeric(10,2)               |           | not null |                              | main     |             |              | Сумма платежа, руб. (строго положительная)
+ method         | character varying(10)       |           | not null |                              | extended |             |              | 
+ payment_type   | character varying(10)       |           | not null |                              | extended |             |              | Тип платежа: deposit (залог), rent (оплата проката), penalty (пеня)
+Indexes:
+    "pk_payment" PRIMARY KEY, btree (payment_id)
+    "ix_payment_date" btree (payment_date)
+    "ix_payment_rental" btree (rental_id)
+    "uq_payment_number" UNIQUE CONSTRAINT, btree (payment_number)
+Check constraints:
+    "ck_payment_amount" CHECK (amount > 0::numeric)
+    "ck_payment_method" CHECK (method::text = ANY (ARRAY['cash'::character varying, 'card'::character varying, 'transfer'::character varying]::text[]))
+    "ck_payment_number" CHECK (payment_number::text ~ '^PM-[0-9]{6}$'::text)
+    "ck_payment_type" CHECK (payment_type::text = ANY (ARRAY['deposit'::character varying, 'rent'::character varying, 'penalty'::character varying]::text[]))
+Foreign-key constraints:
+    "fk_payment_rental" FOREIGN KEY (rental_id) REFERENCES video_rental_3nf.rental(rental_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Access method: heap
+
+          Sequence "video_rental_3nf.payment_payment_id_seq"
+  Type   | Start | Minimum |  Maximum   | Increment | Cycles? | Cache 
+---------+-------+---------+------------+-----------+---------+-------
+ integer |     1 |       1 | 2147483647 |         1 | no      |     1
+Sequence for identity column: video_rental_3nf.payment.payment_id
+
+                Index "video_rental_3nf.pk_customer"
+   Column    |  Type   | Key? | Definition  | Storage | Stats target 
+-------------+---------+------+-------------+---------+--------------
+ customer_id | integer | yes  | customer_id | plain   | 
+primary key, btree, for table "video_rental_3nf.customer"
+
+                Index "video_rental_3nf.pk_employee"
+   Column    |  Type   | Key? | Definition  | Storage | Stats target 
+-------------+---------+------+-------------+---------+--------------
+ employee_id | integer | yes  | employee_id | plain   | 
+primary key, btree, for table "video_rental_3nf.employee"
+
+                Index "video_rental_3nf.pk_film"
+ Column  |  Type   | Key? | Definition | Storage | Stats target 
+---------+---------+------+------------+---------+--------------
+ film_id | integer | yes  | film_id    | plain   | 
+primary key, btree, for table "video_rental_3nf.film"
+
+             Index "video_rental_3nf.pk_film_genre"
+  Column  |  Type   | Key? | Definition | Storage | Stats target 
+----------+---------+------+------------+---------+--------------
+ film_id  | integer | yes  | film_id    | plain   | 
+ genre_id | integer | yes  | genre_id   | plain   | 
+primary key, btree, for table "video_rental_3nf.film_genre"
+
+                Index "video_rental_3nf.pk_genre"
+  Column  |  Type   | Key? | Definition | Storage | Stats target 
+----------+---------+------+------------+---------+--------------
+ genre_id | integer | yes  | genre_id   | plain   | 
+primary key, btree, for table "video_rental_3nf.genre"
+
+                Index "video_rental_3nf.pk_payment"
+   Column   |  Type   | Key? | Definition | Storage | Stats target 
+------------+---------+------+------------+---------+--------------
+ payment_id | integer | yes  | payment_id | plain   | 
+primary key, btree, for table "video_rental_3nf.payment"
+
+                Index "video_rental_3nf.pk_rental"
+  Column   |  Type   | Key? | Definition | Storage | Stats target 
+-----------+---------+------+------------+---------+--------------
+ rental_id | integer | yes  | rental_id  | plain   | 
+primary key, btree, for table "video_rental_3nf.rental"
+
+                  Index "video_rental_3nf.pk_rental_item"
+     Column     |  Type   | Key? |   Definition   | Storage | Stats target 
+----------------+---------+------+----------------+---------+--------------
+ rental_item_id | integer | yes  | rental_item_id | plain   | 
+primary key, btree, for table "video_rental_3nf.rental_item"
+
+                Index "video_rental_3nf.pk_tariff"
+  Column   |  Type   | Key? | Definition | Storage | Stats target 
+-----------+---------+------+------------+---------+--------------
+ tariff_id | integer | yes  | tariff_id  | plain   | 
+primary key, btree, for table "video_rental_3nf.tariff"
+
+             Index "video_rental_3nf.pk_video_copy"
+ Column  |  Type   | Key? | Definition | Storage | Stats target 
+---------+---------+------+------------+---------+--------------
+ copy_id | integer | yes  | copy_id    | plain   | 
+primary key, btree, for table "video_rental_3nf.video_copy"
+
+                                                                                                 Table "video_rental_3nf.rental"
+       Column        |          Type          | Collation | Nullable |           Default            | Storage  | Compression | Stats target |                                    Description                                     
+---------------------+------------------------+-----------+----------+------------------------------+----------+-------------+--------------+------------------------------------------------------------------------------------
+ rental_id           | integer                |           | not null | generated always as identity | plain    |             |              | 
+ rental_number       | character varying(12)  |           | not null |                              | extended |             |              | Номер операции проката (бизнес-ключ)
+ customer_id         | integer                |           | not null |                              | plain    |             |              | 
+ employee_id         | integer                |           | not null |                              | plain    |             |              | 
+ issue_date          | date                   |           | not null | lab."current_date"()         | plain    |             |              | 
+ planned_return_date | date                   |           | not null |                              | plain    |             |              | Плановая дата возврата всего проката
+ actual_return_date  | date                   |           |          |                              | plain    |             |              | Фактическая дата возврата; заполняется автоматически при возврате всех экземпляров
+ deposit_amount      | numeric(10,2)          |           | not null | 0                            | main     |             |              | 
+ status              | character varying(12)  |           | not null | 'issued'::character varying  | extended |             |              | Статус операции: issued (выдан), closed (закрыт), cancelled (отменен)
+ note                | character varying(300) |           |          |                              | extended |             |              | 
+Indexes:
+    "pk_rental" PRIMARY KEY, btree (rental_id)
+    "ix_rental_customer" btree (customer_id)
+    "ix_rental_employee" btree (employee_id)
+    "ix_rental_planned_return" btree (planned_return_date)
+    "ix_rental_status" btree (status)
+    "uq_rental_number" UNIQUE CONSTRAINT, btree (rental_number)
+Check constraints:
+    "ck_rental_actual" CHECK (actual_return_date IS NULL OR actual_return_date >= issue_date)
+    "ck_rental_closed_actual" CHECK (status::text <> 'closed'::text OR actual_return_date IS NOT NULL)
+    "ck_rental_deposit" CHECK (deposit_amount >= 0::numeric)
+    "ck_rental_issue_planned" CHECK (planned_return_date >= issue_date)
+    "ck_rental_number" CHECK (rental_number::text ~ '^RN-[0-9]{6}$'::text)
+    "ck_rental_status" CHECK (status::text = ANY (ARRAY['issued'::character varying, 'closed'::character varying, 'cancelled'::character varying]::text[]))
+Foreign-key constraints:
+    "fk_rental_customer" FOREIGN KEY (customer_id) REFERENCES video_rental_3nf.customer(customer_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    "fk_rental_employee" FOREIGN KEY (employee_id) REFERENCES video_rental_3nf.employee(employee_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Referenced by:
+    TABLE "video_rental_3nf.payment" CONSTRAINT "fk_payment_rental" FOREIGN KEY (rental_id) REFERENCES video_rental_3nf.rental(rental_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    TABLE "video_rental_3nf.rental_item" CONSTRAINT "fk_rental_item_rental" FOREIGN KEY (rental_id) REFERENCES video_rental_3nf.rental(rental_id) ON UPDATE CASCADE ON DELETE CASCADE
+Access method: heap
+
+                                                                                           Table "video_rental_3nf.rental_item"
+       Column        |         Type          | Collation | Nullable |           Default            | Storage  | Compression | Stats target |                                  Description                                  
+---------------------+-----------------------+-----------+----------+------------------------------+----------+-------------+--------------+-------------------------------------------------------------------------------
+ rental_item_id      | integer               |           | not null | generated always as identity | plain    |             |              | 
+ rental_id           | integer               |           | not null |                              | plain    |             |              | 
+ copy_id             | integer               |           | not null |                              | plain    |             |              | 
+ daily_rate          | numeric(8,2)          |           | not null |                              | main     |             |              | Стоимость суток проката, зафиксированная на момент выдачи (историческая цена)
+ status              | character varying(10) |           | not null | 'issued'::character varying  | extended |             |              | 
+ actual_return_date  | date                  |           |          |                              | plain    |             |              | 
+ condition_on_return | character varying(12) |           |          |                              | extended |             |              | Состояние экземпляра при возврате
+Indexes:
+    "pk_rental_item" PRIMARY KEY, btree (rental_item_id)
+    "ix_rental_item_copy" btree (copy_id)
+    "ix_rental_item_rental" btree (rental_id)
+    "uq_rental_item" UNIQUE CONSTRAINT, btree (rental_id, copy_id)
+    "ux_rental_item_active_copy" UNIQUE, btree (copy_id) WHERE status::text = 'issued'::text
+Check constraints:
+    "ck_rental_item_condition" CHECK (condition_on_return IS NULL OR (condition_on_return::text = ANY (ARRAY['new'::character varying, 'good'::character varying, 'worn'::character varying, 'damaged'::character varying, 'written_off'::character varying]::text[])))
+    "ck_rental_item_condition_required" CHECK (status::text <> 'returned'::text OR condition_on_return IS NOT NULL)
+    "ck_rental_item_daily_rate" CHECK (daily_rate > 0::numeric)
+    "ck_rental_item_return" CHECK ((status::text = 'returned'::text) = (actual_return_date IS NOT NULL))
+    "ck_rental_item_status" CHECK (status::text = ANY (ARRAY['issued'::character varying, 'returned'::character varying]::text[]))
+Foreign-key constraints:
+    "fk_rental_item_copy" FOREIGN KEY (copy_id) REFERENCES video_rental_3nf.video_copy(copy_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    "fk_rental_item_rental" FOREIGN KEY (rental_id) REFERENCES video_rental_3nf.rental(rental_id) ON UPDATE CASCADE ON DELETE CASCADE
+Triggers:
+    trg_rental_item_sync_aiud AFTER INSERT OR DELETE OR UPDATE ON video_rental_3nf.rental_item FOR EACH ROW EXECUTE FUNCTION video_rental_3nf.trg_rental_item_sync()
+Access method: heap
+
+      Sequence "video_rental_3nf.rental_item_rental_item_id_seq"
+  Type   | Start | Minimum |  Maximum   | Increment | Cycles? | Cache 
+---------+-------+---------+------------+-----------+---------+-------
+ integer |     1 |       1 | 2147483647 |         1 | no      |     1
+Sequence for identity column: video_rental_3nf.rental_item.rental_item_id
+
+           Sequence "video_rental_3nf.rental_rental_id_seq"
+  Type   | Start | Minimum |  Maximum   | Increment | Cycles? | Cache 
+---------+-------+---------+------------+-----------+---------+-------
+ integer |     1 |       1 | 2147483647 |         1 | no      |     1
+Sequence for identity column: video_rental_3nf.rental.rental_id
+
+                                                                                   Table "video_rental_3nf.tariff"
+      Column      |         Type          | Collation | Nullable |           Default            | Storage  | Compression | Stats target |                        Description                         
+------------------+-----------------------+-----------+----------+------------------------------+----------+-------------+--------------+------------------------------------------------------------
+ tariff_id        | integer               |           | not null | generated always as identity | plain    |             |              | 
+ code             | character varying(12) |           | not null |                              | extended |             |              | 
+ name             | character varying(80) |           | not null |                              | extended |             |              | 
+ daily_rate       | numeric(8,2)          |           | not null |                              | main     |             |              | Стоимость одних суток проката, руб.
+ max_rental_days  | smallint              |           | not null |                              | plain    |             |              | Нормативный срок проката, суток
+ late_fee_per_day | numeric(8,2)          |           | not null |                              | main     |             |              | Пеня за каждые сутки просрочки, руб.
+ valid_from       | date                  |           | not null |                              | plain    |             |              | 
+ valid_to         | date                  |           |          |                              | plain    |             |              | Дата окончания действия тарифа; NULL - действует бессрочно
+Indexes:
+    "pk_tariff" PRIMARY KEY, btree (tariff_id)
+    "uq_tariff_code" UNIQUE CONSTRAINT, btree (code)
+    "uq_tariff_name" UNIQUE CONSTRAINT, btree (name)
+Check constraints:
+    "ck_tariff_daily_rate" CHECK (daily_rate > 0::numeric)
+    "ck_tariff_late_fee" CHECK (late_fee_per_day >= 0::numeric)
+    "ck_tariff_max_days" CHECK (max_rental_days >= 1 AND max_rental_days <= 30)
+    "ck_tariff_period" CHECK (valid_to IS NULL OR valid_to > valid_from)
+Referenced by:
+    TABLE "video_rental_3nf.film" CONSTRAINT "fk_film_tariff" FOREIGN KEY (tariff_id) REFERENCES video_rental_3nf.tariff(tariff_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Access method: heap
+
+           Sequence "video_rental_3nf.tariff_tariff_id_seq"
+  Type   | Start | Minimum |  Maximum   | Increment | Cycles? | Cache 
+---------+-------+---------+------------+-----------+---------+-------
+ integer |     1 |       1 | 2147483647 |         1 | no      |     1
+Sequence for identity column: video_rental_3nf.tariff.tariff_id
+
+                  Index "video_rental_3nf.uq_customer_card_number"
+   Column    |         Type          | Key? | Definition  | Storage  | Stats target 
+-------------+-----------------------+------+-------------+----------+--------------
+ card_number | character varying(12) | yes  | card_number | extended | 
+unique, btree, for table "video_rental_3nf.customer"
+
+                  Index "video_rental_3nf.uq_customer_email"
+ Column |          Type          | Key? | Definition | Storage  | Stats target 
+--------+------------------------+------+------------+----------+--------------
+ email  | character varying(120) | yes  | email      | extended | 
+unique, btree, for table "video_rental_3nf.customer"
+
+                  Index "video_rental_3nf.uq_customer_phone"
+ Column |         Type          | Key? | Definition | Storage  | Stats target 
+--------+-----------------------+------+------------+----------+--------------
+ phone  | character varying(20) | yes  | phone      | extended | 
+unique, btree, for table "video_rental_3nf.customer"
+
+                    Index "video_rental_3nf.uq_employee_personnel_number"
+      Column      |         Type          | Key? |    Definition    | Storage  | Stats target 
+------------------+-----------------------+------+------------------+----------+--------------
+ personnel_number | character varying(10) | yes  | personnel_number | extended | 
+unique, btree, for table "video_rental_3nf.employee"
+
+                  Index "video_rental_3nf.uq_employee_phone"
+ Column |         Type          | Key? | Definition | Storage  | Stats target 
+--------+-----------------------+------+------------+----------+--------------
+ phone  | character varying(20) | yes  | phone      | extended | 
+unique, btree, for table "video_rental_3nf.employee"
+
+                     Index "video_rental_3nf.uq_film_catalog_number"
+     Column     |         Type          | Key? |   Definition   | Storage  | Stats target 
+----------------+-----------------------+------+----------------+----------+--------------
+ catalog_number | character varying(16) | yes  | catalog_number | extended | 
+unique, btree, for table "video_rental_3nf.film"
+
+                      Index "video_rental_3nf.uq_film_title_year"
+    Column    |          Type          | Key? |  Definition  | Storage  | Stats target 
+--------------+------------------------+------+--------------+----------+--------------
+ title        | character varying(200) | yes  | title        | extended | 
+ release_year | smallint               | yes  | release_year | plain    | 
+ media_type   | character varying(10)  | yes  | media_type   | extended | 
+unique, btree, for table "video_rental_3nf.film"
+
+                    Index "video_rental_3nf.uq_genre_code"
+ Column |         Type          | Key? | Definition | Storage  | Stats target 
+--------+-----------------------+------+------------+----------+--------------
+ code   | character varying(12) | yes  | code       | extended | 
+unique, btree, for table "video_rental_3nf.genre"
+
+                    Index "video_rental_3nf.uq_genre_name"
+ Column |         Type          | Key? | Definition | Storage  | Stats target 
+--------+-----------------------+------+------------+----------+--------------
+ name   | character varying(60) | yes  | name       | extended | 
+unique, btree, for table "video_rental_3nf.genre"
+
+                        Index "video_rental_3nf.uq_payment_number"
+     Column     |         Type          | Key? |   Definition   | Storage  | Stats target 
+----------------+-----------------------+------+----------------+----------+--------------
+ payment_number | character varying(12) | yes  | payment_number | extended | 
+unique, btree, for table "video_rental_3nf.payment"
+
+             Index "video_rental_3nf.uq_rental_item"
+  Column   |  Type   | Key? | Definition | Storage | Stats target 
+-----------+---------+------+------------+---------+--------------
+ rental_id | integer | yes  | rental_id  | plain   | 
+ copy_id   | integer | yes  | copy_id    | plain   | 
+unique, btree, for table "video_rental_3nf.rental_item"
+
+                       Index "video_rental_3nf.uq_rental_number"
+    Column     |         Type          | Key? |  Definition   | Storage  | Stats target 
+---------------+-----------------------+------+---------------+----------+--------------
+ rental_number | character varying(12) | yes  | rental_number | extended | 
+unique, btree, for table "video_rental_3nf.rental"
+
+                   Index "video_rental_3nf.uq_tariff_code"
+ Column |         Type          | Key? | Definition | Storage  | Stats target 
+--------+-----------------------+------+------------+----------+--------------
+ code   | character varying(12) | yes  | code       | extended | 
+unique, btree, for table "video_rental_3nf.tariff"
+
+                   Index "video_rental_3nf.uq_tariff_name"
+ Column |         Type          | Key? | Definition | Storage  | Stats target 
+--------+-----------------------+------+------------+----------+--------------
+ name   | character varying(80) | yes  | name       | extended | 
+unique, btree, for table "video_rental_3nf.tariff"
+
+                  Index "video_rental_3nf.uq_video_copy_inventory_code"
+     Column     |         Type          | Key? |   Definition   | Storage  | Stats target 
+----------------+-----------------------+------+----------------+----------+--------------
+ inventory_code | character varying(16) | yes  | inventory_code | extended | 
+unique, btree, for table "video_rental_3nf.video_copy"
+
+         Index "video_rental_3nf.ux_film_genre_primary"
+ Column  |  Type   | Key? | Definition | Storage | Stats target 
+---------+---------+------+------------+---------+--------------
+ film_id | integer | yes  | film_id    | plain   | 
+unique, btree, for table "video_rental_3nf.film_genre", predicate (is_primary)
+
+      Index "video_rental_3nf.ux_rental_item_active_copy"
+ Column  |  Type   | Key? | Definition | Storage | Stats target 
+---------+---------+------+------------+---------+--------------
+ copy_id | integer | yes  | copy_id    | plain   | 
+unique, btree, for table "video_rental_3nf.rental_item", predicate (status::text = 'issued'::text)
+
+                                View "video_rental_3nf.v_active_rental"
+       Column        |         Type          | Collation | Nullable | Default | Storage  | Description 
+---------------------+-----------------------+-----------+----------+---------+----------+-------------
+ rental_id           | integer               |           |          |         | plain    | 
+ rental_number       | character varying(12) |           |          |         | extended | 
+ issue_date          | date                  |           |          |         | plain    | 
+ planned_return_date | date                  |           |          |         | plain    | 
+ card_number         | character varying(12) |           |          |         | extended | 
+ customer_name       | text                  |           |          |         | extended | 
+ personnel_number    | character varying(10) |           |          |         | extended | 
+ employee_name       | text                  |           |          |         | extended | 
+ items_total         | bigint                |           |          |         | plain    | 
+ items_open          | bigint                |           |          |         | plain    | 
+ is_overdue          | boolean               |           |          |         | plain    | 
+ overdue_days        | integer               |           |          |         | plain    | 
+View definition:
+ SELECT r.rental_id,
+    r.rental_number,
+    r.issue_date,
+    r.planned_return_date,
+    c.card_number,
+    (c.last_name::text || ' '::text) || c.first_name::text AS customer_name,
+    e.personnel_number,
+    (e.last_name::text || ' '::text) || e.first_name::text AS employee_name,
+    ( SELECT count(*) AS count
+           FROM video_rental_3nf.rental_item ri
+          WHERE ri.rental_id = r.rental_id) AS items_total,
+    ( SELECT count(*) AS count
+           FROM video_rental_3nf.rental_item ri
+          WHERE ri.rental_id = r.rental_id AND ri.status::text = 'issued'::text) AS items_open,
+    r.planned_return_date < lab."current_date"() AS is_overdue,
+    lab."current_date"() - r.planned_return_date AS overdue_days
+   FROM video_rental_3nf.rental r
+     JOIN video_rental_3nf.customer c ON c.customer_id = r.customer_id
+     JOIN video_rental_3nf.employee e ON e.employee_id = r.employee_id
+  WHERE r.status::text = 'issued'::text;
+
+                                View "video_rental_3nf.v_copy_status"
+      Column      |          Type          | Collation | Nullable | Default | Storage  | Description 
+------------------+------------------------+-----------+----------+---------+----------+-------------
+ copy_id          | integer                |           |          |         | plain    | 
+ inventory_code   | character varying(16)  |           |          |         | extended | 
+ film_id          | integer                |           |          |         | plain    | 
+ title            | character varying(200) |           |          |         | extended | 
+ condition        | character varying(12)  |           |          |         | extended | 
+ storage_location | character varying(20)  |           |          |         | extended | 
+ is_rented        | boolean                |           |          |         | plain    | 
+ is_available     | boolean                |           |          |         | plain    | 
+View definition:
+ SELECT vc.copy_id,
+    vc.inventory_code,
+    f.film_id,
+    f.title,
+    vc.condition,
+    vc.storage_location,
+    (EXISTS ( SELECT 1
+           FROM video_rental_3nf.rental_item ri
+          WHERE ri.copy_id = vc.copy_id AND ri.status::text = 'issued'::text)) AS is_rented,
+    vc.condition::text <> 'written_off'::text AND NOT (EXISTS ( SELECT 1
+           FROM video_rental_3nf.rental_item ri
+          WHERE ri.copy_id = vc.copy_id AND ri.status::text = 'issued'::text)) AS is_available
+   FROM video_rental_3nf.video_copy vc
+     JOIN video_rental_3nf.film f ON f.film_id = vc.film_id;
+
+                              View "video_rental_3nf.v_film_catalog"
+     Column     |          Type          | Collation | Nullable | Default | Storage  | Description 
+----------------+------------------------+-----------+----------+---------+----------+-------------
+ film_id        | integer                |           |          |         | plain    | 
+ catalog_number | character varying(16)  |           |          |         | extended | 
+ title          | character varying(200) |           |          |         | extended | 
+ release_year   | smallint               |           |          |         | plain    | 
+ media_type     | character varying(10)  |           |          |         | extended | 
+ age_rating     | character varying(8)   |           |          |         | extended | 
+ duration_min   | smallint               |           |          |         | plain    | 
+ tariff_code    | character varying(12)  |           |          |         | extended | 
+ daily_rate     | numeric(8,2)           |           |          |         | main     | 
+ genres         | text                   |           |          |         | extended | 
+ copies_total   | bigint                 |           |          |         | plain    | 
+View definition:
+ SELECT f.film_id,
+    f.catalog_number,
+    f.title,
+    f.release_year,
+    f.media_type,
+    f.age_rating,
+    f.duration_min,
+    t.code AS tariff_code,
+    t.daily_rate,
+    ( SELECT string_agg(g.name::text, ', '::text ORDER BY (g.name::text)) AS string_agg
+           FROM video_rental_3nf.film_genre fg
+             JOIN video_rental_3nf.genre g ON g.genre_id = fg.genre_id
+          WHERE fg.film_id = f.film_id) AS genres,
+    ( SELECT count(*) AS count
+           FROM video_rental_3nf.video_copy vc
+          WHERE vc.film_id = f.film_id) AS copies_total
+   FROM video_rental_3nf.film f
+     JOIN video_rental_3nf.tariff t ON t.tariff_id = f.tariff_id;
+
+                               View "video_rental_3nf.v_rental_item_cost"
+       Column        |          Type          | Collation | Nullable | Default | Storage  | Description 
+---------------------+------------------------+-----------+----------+---------+----------+-------------
+ rental_item_id      | integer                |           |          |         | plain    | 
+ rental_id           | integer                |           |          |         | plain    | 
+ rental_number       | character varying(12)  |           |          |         | extended | 
+ copy_id             | integer                |           |          |         | plain    | 
+ inventory_code      | character varying(16)  |           |          |         | extended | 
+ title               | character varying(200) |           |          |         | extended | 
+ issue_date          | date                   |           |          |         | plain    | 
+ planned_return_date | date                   |           |          |         | plain    | 
+ actual_return_date  | date                   |           |          |         | plain    | 
+ daily_rate          | numeric(8,2)           |           |          |         | main     | 
+ billed_days         | integer                |           |          |         | plain    | 
+ item_cost           | numeric                |           |          |         | main     | 
+ overdue_days        | integer                |           |          |         | plain    | 
+View definition:
+ SELECT ri.rental_item_id,
+    r.rental_id,
+    r.rental_number,
+    ri.copy_id,
+    vc.inventory_code,
+    f.title,
+    r.issue_date,
+    r.planned_return_date,
+    ri.actual_return_date,
+    ri.daily_rate,
+    GREATEST(1, COALESCE(ri.actual_return_date, lab."current_date"()) - r.issue_date) AS billed_days,
+    ri.daily_rate * GREATEST(1, COALESCE(ri.actual_return_date, lab."current_date"()) - r.issue_date)::numeric AS item_cost,
+        CASE
+            WHEN ri.actual_return_date IS NULL AND r.planned_return_date < lab."current_date"() THEN lab."current_date"() - r.planned_return_date
+            ELSE 0
+        END AS overdue_days
+   FROM video_rental_3nf.rental_item ri
+     JOIN video_rental_3nf.rental r ON r.rental_id = ri.rental_id
+     JOIN video_rental_3nf.video_copy vc ON vc.copy_id = ri.copy_id
+     JOIN video_rental_3nf.film f ON f.film_id = vc.film_id;
+
+                                View "video_rental_3nf.v_rental_total"
+       Column        |         Type          | Collation | Nullable | Default | Storage  | Description 
+---------------------+-----------------------+-----------+----------+---------+----------+-------------
+ rental_id           | integer               |           |          |         | plain    | 
+ rental_number       | character varying(12) |           |          |         | extended | 
+ status              | character varying(12) |           |          |         | extended | 
+ issue_date          | date                  |           |          |         | plain    | 
+ planned_return_date | date                  |           |          |         | plain    | 
+ actual_return_date  | date                  |           |          |         | plain    | 
+ rent_cost           | numeric               |           |          |         | main     | 
+ paid_total          | numeric               |           |          |         | main     | 
+ penalty_total       | numeric               |           |          |         | main     | 
+View definition:
+ SELECT rental_id,
+    rental_number,
+    status,
+    issue_date,
+    planned_return_date,
+    actual_return_date,
+    COALESCE(( SELECT sum(ic.item_cost) AS sum
+           FROM video_rental_3nf.v_rental_item_cost ic
+          WHERE ic.rental_id = r.rental_id), 0::numeric) AS rent_cost,
+    COALESCE(( SELECT sum(p.amount) AS sum
+           FROM video_rental_3nf.payment p
+          WHERE p.rental_id = r.rental_id), 0::numeric) AS paid_total,
+    COALESCE(( SELECT sum(p.amount) AS sum
+           FROM video_rental_3nf.payment p
+          WHERE p.rental_id = r.rental_id AND p.payment_type::text = 'penalty'::text), 0::numeric) AS penalty_total
+   FROM video_rental_3nf.rental r;
+
+                                                                                 Table "video_rental_3nf.video_copy"
+      Column      |         Type          | Collation | Nullable |           Default            | Storage  | Compression | Stats target |                         Description                         
+------------------+-----------------------+-----------+----------+------------------------------+----------+-------------+--------------+-------------------------------------------------------------
+ copy_id          | integer               |           | not null | generated always as identity | plain    |             |              | 
+ film_id          | integer               |           | not null |                              | plain    |             |              | 
+ inventory_code   | character varying(16) |           | not null |                              | extended |             |              | Инвентарный номер экземпляра (бизнес-ключ)
+ acquisition_date | date                  |           | not null | lab."current_date"()         | plain    |             |              | 
+ purchase_price   | numeric(10,2)         |           | not null |                              | main     |             |              | 
+ condition        | character varying(12) |           | not null | 'new'::character varying     | extended |             |              | Состояние экземпляра: new, good, worn, damaged, written_off
+ storage_location | character varying(20) |           |          |                              | extended |             |              | Место хранения (зал, стеллаж)
+Indexes:
+    "pk_video_copy" PRIMARY KEY, btree (copy_id)
+    "ix_video_copy_condition" btree (condition)
+    "ix_video_copy_film" btree (film_id)
+    "uq_video_copy_inventory_code" UNIQUE CONSTRAINT, btree (inventory_code)
+Check constraints:
+    "ck_video_copy_condition" CHECK (condition::text = ANY (ARRAY['new'::character varying, 'good'::character varying, 'worn'::character varying, 'damaged'::character varying, 'written_off'::character varying]::text[]))
+    "ck_video_copy_inventory_code" CHECK (inventory_code::text ~ '^VC-[0-9]{5}$'::text)
+    "ck_video_copy_price" CHECK (purchase_price >= 0::numeric)
+Foreign-key constraints:
+    "fk_video_copy_film" FOREIGN KEY (film_id) REFERENCES video_rental_3nf.film(film_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Referenced by:
+    TABLE "video_rental_3nf.rental_item" CONSTRAINT "fk_rental_item_copy" FOREIGN KEY (copy_id) REFERENCES video_rental_3nf.video_copy(copy_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Access method: heap
+
+          Sequence "video_rental_3nf.video_copy_copy_id_seq"
+  Type   | Start | Minimum |  Maximum   | Increment | Cycles? | Cache 
+---------+-------+---------+------------+-----------+---------+-------
+ integer |     1 |       1 | 2147483647 |         1 | no      |     1
+Sequence for identity column: video_rental_3nf.video_copy.copy_id
+

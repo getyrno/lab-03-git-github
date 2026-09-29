@@ -1,0 +1,21 @@
+=== История контактов клиента CR-00001 (sat_customer_contact) ===
+ card_number |      load_dts       |    phone     |              address               |             hashdiff             |      record_source       
+-------------+---------------------+--------------+------------------------------------+----------------------------------+--------------------------
+ CR-00001    | 2026-09-28 08:00:00 | +79161234501 | г. Москва, ул. Ленина, д. 1, кв. 5 | 4272ee9344a657979d817c13c397d829 | video_rental_3nf#initial
+ CR-00001    | 2026-09-28 09:15:00 | +79161234599 | г. Москва, ул. Ленина, д. 1, кв. 6 | e96248628284e5270644c8cd542344fa | video_rental_3nf#daily
+(2 rows)
+
+=== История состояния экземпляра VC-00005 (sat_video_copy_details) ===
+ inventory_code |      load_dts       | condition | storage_location |             hashdiff             |      record_source       
+----------------+---------------------+-----------+------------------+----------------------------------+--------------------------
+ VC-00005       | 2026-09-28 08:00:00 | good      | Зал A, ст. 3     | fd079bc5fb0716b1f3faf2c116d04082 | video_rental_3nf#initial
+ VC-00005       | 2026-09-28 09:15:00 | worn      | Зал A, ст. 3     | 6357f92c6e47808f96b9f37f9ce95727 | video_rental_3nf#daily
+(2 rows)
+
+=== История статуса проката RN-000006 (sat_rental_details) ===
+ rental_number |      load_dts       | status | planned_return_date | actual_return_date |      record_source       
+---------------+---------------------+--------+---------------------+--------------------+--------------------------
+ RN-000006     | 2026-09-28 08:00:00 | issued | 2026-09-29          |                    | video_rental_3nf#initial
+ RN-000006     | 2026-09-28 10:30:00 | closed | 2026-09-29          | 2026-09-28         | video_rental_3nf#daily
+(2 rows)
+

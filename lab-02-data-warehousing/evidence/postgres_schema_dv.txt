@@ -1,0 +1,1265 @@
+                                                               Table "video_rental_dv.hub_customer"
+    Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target |               Description                
+---------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+------------------------------------------
+ customer_hk   | character(32)               |           | not null |           | extended |             |              | Хэш-ключ Хаба (md5 от бизнес-ключа)
+ card_number   | character varying(12)       |           | not null |           | extended |             |              | Бизнес-ключ: номер клубной карты
+ load_dts      | timestamp without time zone |           | not null | lab.now() | plain    |             |              | Дата и время загрузки записи в хранилище
+ record_source | character varying(50)       |           | not null |           | extended |             |              | Источник записи
+Indexes:
+    "pk_hub_customer" PRIMARY KEY, btree (customer_hk)
+    "uq_hub_customer_bk" UNIQUE CONSTRAINT, btree (card_number)
+Check constraints:
+    "ck_hub_customer_bk" CHECK (card_number::text ~ '^CR-[0-9]{5}$'::text)
+Referenced by:
+    TABLE "video_rental_dv.link_rental_customer" CONSTRAINT "fk_link_rental_customer_customer" FOREIGN KEY (customer_hk) REFERENCES video_rental_dv.hub_customer(customer_hk)
+    TABLE "video_rental_dv.sat_customer_contact" CONSTRAINT "fk_sat_customer_contact" FOREIGN KEY (customer_hk) REFERENCES video_rental_dv.hub_customer(customer_hk)
+    TABLE "video_rental_dv.sat_customer_details" CONSTRAINT "fk_sat_customer_details" FOREIGN KEY (customer_hk) REFERENCES video_rental_dv.hub_customer(customer_hk)
+Access method: heap
+
+                                                  Table "video_rental_dv.hub_employee"
+      Column      |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+------------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ employee_hk      | character(32)               |           | not null |           | extended |             |              | 
+ personnel_number | character varying(10)       |           | not null |           | extended |             |              | 
+ load_dts         | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source    | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_hub_employee" PRIMARY KEY, btree (employee_hk)
+    "uq_hub_employee_bk" UNIQUE CONSTRAINT, btree (personnel_number)
+Check constraints:
+    "ck_hub_employee_bk" CHECK (personnel_number::text ~ '^EMP-[0-9]{4}$'::text)
+Referenced by:
+    TABLE "video_rental_dv.link_rental_employee" CONSTRAINT "fk_link_rental_employee_employee" FOREIGN KEY (employee_hk) REFERENCES video_rental_dv.hub_employee(employee_hk)
+    TABLE "video_rental_dv.sat_employee_details" CONSTRAINT "fk_sat_employee_details" FOREIGN KEY (employee_hk) REFERENCES video_rental_dv.hub_employee(employee_hk)
+Access method: heap
+
+                                                   Table "video_rental_dv.hub_film"
+     Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+----------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ film_hk        | character(32)               |           | not null |           | extended |             |              | 
+ catalog_number | character varying(16)       |           | not null |           | extended |             |              | 
+ load_dts       | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source  | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_hub_film" PRIMARY KEY, btree (film_hk)
+    "uq_hub_film_bk" UNIQUE CONSTRAINT, btree (catalog_number)
+Check constraints:
+    "ck_hub_film_bk" CHECK (catalog_number::text ~ '^FM-[0-9]{4}$'::text)
+Referenced by:
+    TABLE "video_rental_dv.link_film_copy" CONSTRAINT "fk_link_film_copy_film" FOREIGN KEY (film_hk) REFERENCES video_rental_dv.hub_film(film_hk)
+    TABLE "video_rental_dv.link_film_genre" CONSTRAINT "fk_link_film_genre_film" FOREIGN KEY (film_hk) REFERENCES video_rental_dv.hub_film(film_hk)
+    TABLE "video_rental_dv.link_film_tariff" CONSTRAINT "fk_link_film_tariff_film" FOREIGN KEY (film_hk) REFERENCES video_rental_dv.hub_film(film_hk)
+    TABLE "video_rental_dv.sat_film_details" CONSTRAINT "fk_sat_film_details" FOREIGN KEY (film_hk) REFERENCES video_rental_dv.hub_film(film_hk)
+Access method: heap
+
+                                                  Table "video_rental_dv.hub_genre"
+    Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+---------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ genre_hk      | character(32)               |           | not null |           | extended |             |              | 
+ genre_code    | character varying(12)       |           | not null |           | extended |             |              | 
+ load_dts      | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_hub_genre" PRIMARY KEY, btree (genre_hk)
+    "uq_hub_genre_bk" UNIQUE CONSTRAINT, btree (genre_code)
+Referenced by:
+    TABLE "video_rental_dv.link_film_genre" CONSTRAINT "fk_link_film_genre_genre" FOREIGN KEY (genre_hk) REFERENCES video_rental_dv.hub_genre(genre_hk)
+    TABLE "video_rental_dv.sat_genre_details" CONSTRAINT "fk_sat_genre_details" FOREIGN KEY (genre_hk) REFERENCES video_rental_dv.hub_genre(genre_hk)
+Access method: heap
+
+                                                  Table "video_rental_dv.hub_payment"
+     Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+----------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ payment_hk     | character(32)               |           | not null |           | extended |             |              | 
+ payment_number | character varying(12)       |           | not null |           | extended |             |              | 
+ load_dts       | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source  | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_hub_payment" PRIMARY KEY, btree (payment_hk)
+    "uq_hub_payment_bk" UNIQUE CONSTRAINT, btree (payment_number)
+Check constraints:
+    "ck_hub_payment_bk" CHECK (payment_number::text ~ '^PM-[0-9]{6}$'::text)
+Referenced by:
+    TABLE "video_rental_dv.link_rental_payment" CONSTRAINT "fk_link_rental_payment_payment" FOREIGN KEY (payment_hk) REFERENCES video_rental_dv.hub_payment(payment_hk)
+    TABLE "video_rental_dv.sat_payment_details" CONSTRAINT "fk_sat_payment_details" FOREIGN KEY (payment_hk) REFERENCES video_rental_dv.hub_payment(payment_hk)
+Access method: heap
+
+                                                  Table "video_rental_dv.hub_rental"
+    Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+---------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ rental_hk     | character(32)               |           | not null |           | extended |             |              | 
+ rental_number | character varying(12)       |           | not null |           | extended |             |              | 
+ load_dts      | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_hub_rental" PRIMARY KEY, btree (rental_hk)
+    "uq_hub_rental_bk" UNIQUE CONSTRAINT, btree (rental_number)
+Check constraints:
+    "ck_hub_rental_bk" CHECK (rental_number::text ~ '^RN-[0-9]{6}$'::text)
+Referenced by:
+    TABLE "video_rental_dv.link_rental_copy" CONSTRAINT "fk_link_rental_copy_rental" FOREIGN KEY (rental_hk) REFERENCES video_rental_dv.hub_rental(rental_hk)
+    TABLE "video_rental_dv.link_rental_customer" CONSTRAINT "fk_link_rental_customer_rental" FOREIGN KEY (rental_hk) REFERENCES video_rental_dv.hub_rental(rental_hk)
+    TABLE "video_rental_dv.link_rental_employee" CONSTRAINT "fk_link_rental_employee_rental" FOREIGN KEY (rental_hk) REFERENCES video_rental_dv.hub_rental(rental_hk)
+    TABLE "video_rental_dv.link_rental_payment" CONSTRAINT "fk_link_rental_payment_rental" FOREIGN KEY (rental_hk) REFERENCES video_rental_dv.hub_rental(rental_hk)
+    TABLE "video_rental_dv.sat_rental_details" CONSTRAINT "fk_sat_rental_details" FOREIGN KEY (rental_hk) REFERENCES video_rental_dv.hub_rental(rental_hk)
+Access method: heap
+
+                                                  Table "video_rental_dv.hub_tariff"
+    Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+---------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ tariff_hk     | character(32)               |           | not null |           | extended |             |              | 
+ tariff_code   | character varying(12)       |           | not null |           | extended |             |              | 
+ load_dts      | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_hub_tariff" PRIMARY KEY, btree (tariff_hk)
+    "uq_hub_tariff_bk" UNIQUE CONSTRAINT, btree (tariff_code)
+Referenced by:
+    TABLE "video_rental_dv.link_film_tariff" CONSTRAINT "fk_link_film_tariff_tariff" FOREIGN KEY (tariff_hk) REFERENCES video_rental_dv.hub_tariff(tariff_hk)
+    TABLE "video_rental_dv.sat_tariff_details" CONSTRAINT "fk_sat_tariff_details" FOREIGN KEY (tariff_hk) REFERENCES video_rental_dv.hub_tariff(tariff_hk)
+Access method: heap
+
+                                                Table "video_rental_dv.hub_video_copy"
+     Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+----------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ copy_hk        | character(32)               |           | not null |           | extended |             |              | 
+ inventory_code | character varying(16)       |           | not null |           | extended |             |              | 
+ load_dts       | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source  | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_hub_video_copy" PRIMARY KEY, btree (copy_hk)
+    "uq_hub_video_copy_bk" UNIQUE CONSTRAINT, btree (inventory_code)
+Check constraints:
+    "ck_hub_video_copy_bk" CHECK (inventory_code::text ~ '^VC-[0-9]{5}$'::text)
+Referenced by:
+    TABLE "video_rental_dv.link_film_copy" CONSTRAINT "fk_link_film_copy_copy" FOREIGN KEY (copy_hk) REFERENCES video_rental_dv.hub_video_copy(copy_hk)
+    TABLE "video_rental_dv.link_rental_copy" CONSTRAINT "fk_link_rental_copy_copy" FOREIGN KEY (copy_hk) REFERENCES video_rental_dv.hub_video_copy(copy_hk)
+    TABLE "video_rental_dv.sat_video_copy_acquisition" CONSTRAINT "fk_sat_video_copy_acquisition" FOREIGN KEY (copy_hk) REFERENCES video_rental_dv.hub_video_copy(copy_hk)
+    TABLE "video_rental_dv.sat_video_copy_details" CONSTRAINT "fk_sat_video_copy_details" FOREIGN KEY (copy_hk) REFERENCES video_rental_dv.hub_video_copy(copy_hk)
+Access method: heap
+
+            Index "video_rental_dv.ix_link_film_copy_copy"
+ Column  |     Type      | Key? | Definition | Storage  | Stats target 
+---------+---------------+------+------------+----------+--------------
+ copy_hk | character(32) | yes  | copy_hk    | extended | 
+btree, for table "video_rental_dv.link_film_copy"
+
+            Index "video_rental_dv.ix_link_film_genre_genre"
+  Column  |     Type      | Key? | Definition | Storage  | Stats target 
+----------+---------------+------+------------+----------+--------------
+ genre_hk | character(32) | yes  | genre_hk   | extended | 
+btree, for table "video_rental_dv.link_film_genre"
+
+           Index "video_rental_dv.ix_link_film_tariff_tariff"
+  Column   |     Type      | Key? | Definition | Storage  | Stats target 
+-----------+---------------+------+------------+----------+--------------
+ tariff_hk | character(32) | yes  | tariff_hk  | extended | 
+btree, for table "video_rental_dv.link_film_tariff"
+
+           Index "video_rental_dv.ix_link_rental_copy_copy"
+ Column  |     Type      | Key? | Definition | Storage  | Stats target 
+---------+---------------+------+------------+----------+--------------
+ copy_hk | character(32) | yes  | copy_hk    | extended | 
+btree, for table "video_rental_dv.link_rental_copy"
+
+          Index "video_rental_dv.ix_link_rental_customer_customer"
+   Column    |     Type      | Key? | Definition  | Storage  | Stats target 
+-------------+---------------+------+-------------+----------+--------------
+ customer_hk | character(32) | yes  | customer_hk | extended | 
+btree, for table "video_rental_dv.link_rental_customer"
+
+          Index "video_rental_dv.ix_link_rental_employee_employee"
+   Column    |     Type      | Key? | Definition  | Storage  | Stats target 
+-------------+---------------+------+-------------+----------+--------------
+ employee_hk | character(32) | yes  | employee_hk | extended | 
+btree, for table "video_rental_dv.link_rental_employee"
+
+          Index "video_rental_dv.ix_link_rental_payment_payment"
+   Column   |     Type      | Key? | Definition | Storage  | Stats target 
+------------+---------------+------+------------+----------+--------------
+ payment_hk | character(32) | yes  | payment_hk | extended | 
+btree, for table "video_rental_dv.link_rental_payment"
+
+                 Index "video_rental_dv.ix_sat_copy_acquisition_ld"
+  Column  |            Type             | Key? | Definition | Storage | Stats target 
+----------+-----------------------------+------+------------+---------+--------------
+ load_dts | timestamp without time zone | yes  | load_dts   | plain   | 
+btree, for table "video_rental_dv.sat_video_copy_acquisition"
+
+                   Index "video_rental_dv.ix_sat_copy_details_ld"
+  Column  |            Type             | Key? | Definition | Storage | Stats target 
+----------+-----------------------------+------+------------+---------+--------------
+ load_dts | timestamp without time zone | yes  | load_dts   | plain   | 
+btree, for table "video_rental_dv.sat_video_copy_details"
+
+                 Index "video_rental_dv.ix_sat_customer_contact_ld"
+  Column  |            Type             | Key? | Definition | Storage | Stats target 
+----------+-----------------------------+------+------------+---------+--------------
+ load_dts | timestamp without time zone | yes  | load_dts   | plain   | 
+btree, for table "video_rental_dv.sat_customer_contact"
+
+                 Index "video_rental_dv.ix_sat_customer_details_ld"
+  Column  |            Type             | Key? | Definition | Storage | Stats target 
+----------+-----------------------------+------+------------+---------+--------------
+ load_dts | timestamp without time zone | yes  | load_dts   | plain   | 
+btree, for table "video_rental_dv.sat_customer_details"
+
+                 Index "video_rental_dv.ix_sat_employee_details_ld"
+  Column  |            Type             | Key? | Definition | Storage | Stats target 
+----------+-----------------------------+------+------------+---------+--------------
+ load_dts | timestamp without time zone | yes  | load_dts   | plain   | 
+btree, for table "video_rental_dv.sat_employee_details"
+
+                   Index "video_rental_dv.ix_sat_film_details_ld"
+  Column  |            Type             | Key? | Definition | Storage | Stats target 
+----------+-----------------------------+------+------------+---------+--------------
+ load_dts | timestamp without time zone | yes  | load_dts   | plain   | 
+btree, for table "video_rental_dv.sat_film_details"
+
+                    Index "video_rental_dv.ix_sat_film_genre_ld"
+  Column  |            Type             | Key? | Definition | Storage | Stats target 
+----------+-----------------------------+------+------------+---------+--------------
+ load_dts | timestamp without time zone | yes  | load_dts   | plain   | 
+btree, for table "video_rental_dv.sat_film_genre_details"
+
+                   Index "video_rental_dv.ix_sat_genre_details_ld"
+  Column  |            Type             | Key? | Definition | Storage | Stats target 
+----------+-----------------------------+------+------------+---------+--------------
+ load_dts | timestamp without time zone | yes  | load_dts   | plain   | 
+btree, for table "video_rental_dv.sat_genre_details"
+
+                  Index "video_rental_dv.ix_sat_payment_details_ld"
+  Column  |            Type             | Key? | Definition | Storage | Stats target 
+----------+-----------------------------+------+------------+---------+--------------
+ load_dts | timestamp without time zone | yes  | load_dts   | plain   | 
+btree, for table "video_rental_dv.sat_payment_details"
+
+                  Index "video_rental_dv.ix_sat_rental_details_ld"
+  Column  |            Type             | Key? | Definition | Storage | Stats target 
+----------+-----------------------------+------+------------+---------+--------------
+ load_dts | timestamp without time zone | yes  | load_dts   | plain   | 
+btree, for table "video_rental_dv.sat_rental_details"
+
+                    Index "video_rental_dv.ix_sat_rental_item_ld"
+  Column  |            Type             | Key? | Definition | Storage | Stats target 
+----------+-----------------------------+------+------------+---------+--------------
+ load_dts | timestamp without time zone | yes  | load_dts   | plain   | 
+btree, for table "video_rental_dv.sat_rental_item_details"
+
+                  Index "video_rental_dv.ix_sat_tariff_details_ld"
+  Column  |            Type             | Key? | Definition | Storage | Stats target 
+----------+-----------------------------+------+------------+---------+--------------
+ load_dts | timestamp without time zone | yes  | load_dts   | plain   | 
+btree, for table "video_rental_dv.sat_tariff_details"
+
+                                                Table "video_rental_dv.link_film_copy"
+    Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+---------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ film_copy_hk  | character(32)               |           | not null |           | extended |             |              | 
+ film_hk       | character(32)               |           | not null |           | extended |             |              | 
+ copy_hk       | character(32)               |           | not null |           | extended |             |              | 
+ load_dts      | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_link_film_copy" PRIMARY KEY, btree (film_copy_hk)
+    "ix_link_film_copy_copy" btree (copy_hk)
+    "uq_link_film_copy_bk" UNIQUE CONSTRAINT, btree (film_hk, copy_hk)
+Foreign-key constraints:
+    "fk_link_film_copy_copy" FOREIGN KEY (copy_hk) REFERENCES video_rental_dv.hub_video_copy(copy_hk)
+    "fk_link_film_copy_film" FOREIGN KEY (film_hk) REFERENCES video_rental_dv.hub_film(film_hk)
+Access method: heap
+
+                                               Table "video_rental_dv.link_film_genre"
+    Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+---------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ film_genre_hk | character(32)               |           | not null |           | extended |             |              | 
+ film_hk       | character(32)               |           | not null |           | extended |             |              | 
+ genre_hk      | character(32)               |           | not null |           | extended |             |              | 
+ load_dts      | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_link_film_genre" PRIMARY KEY, btree (film_genre_hk)
+    "ix_link_film_genre_genre" btree (genre_hk)
+    "uq_link_film_genre_bk" UNIQUE CONSTRAINT, btree (film_hk, genre_hk)
+Foreign-key constraints:
+    "fk_link_film_genre_film" FOREIGN KEY (film_hk) REFERENCES video_rental_dv.hub_film(film_hk)
+    "fk_link_film_genre_genre" FOREIGN KEY (genre_hk) REFERENCES video_rental_dv.hub_genre(genre_hk)
+Referenced by:
+    TABLE "video_rental_dv.sat_film_genre_details" CONSTRAINT "fk_sat_film_genre_details" FOREIGN KEY (film_genre_hk) REFERENCES video_rental_dv.link_film_genre(film_genre_hk)
+Access method: heap
+
+                                               Table "video_rental_dv.link_film_tariff"
+     Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+----------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ film_tariff_hk | character(32)               |           | not null |           | extended |             |              | 
+ film_hk        | character(32)               |           | not null |           | extended |             |              | 
+ tariff_hk      | character(32)               |           | not null |           | extended |             |              | 
+ load_dts       | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source  | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_link_film_tariff" PRIMARY KEY, btree (film_tariff_hk)
+    "ix_link_film_tariff_tariff" btree (tariff_hk)
+    "uq_link_film_tariff_bk" UNIQUE CONSTRAINT, btree (film_hk, tariff_hk)
+Foreign-key constraints:
+    "fk_link_film_tariff_film" FOREIGN KEY (film_hk) REFERENCES video_rental_dv.hub_film(film_hk)
+    "fk_link_film_tariff_tariff" FOREIGN KEY (tariff_hk) REFERENCES video_rental_dv.hub_tariff(tariff_hk)
+Access method: heap
+
+                                               Table "video_rental_dv.link_rental_copy"
+     Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+----------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ rental_copy_hk | character(32)               |           | not null |           | extended |             |              | 
+ rental_hk      | character(32)               |           | not null |           | extended |             |              | 
+ copy_hk        | character(32)               |           | not null |           | extended |             |              | 
+ load_dts       | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source  | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_link_rental_copy" PRIMARY KEY, btree (rental_copy_hk)
+    "ix_link_rental_copy_copy" btree (copy_hk)
+    "uq_link_rental_copy_bk" UNIQUE CONSTRAINT, btree (rental_hk, copy_hk)
+Foreign-key constraints:
+    "fk_link_rental_copy_copy" FOREIGN KEY (copy_hk) REFERENCES video_rental_dv.hub_video_copy(copy_hk)
+    "fk_link_rental_copy_rental" FOREIGN KEY (rental_hk) REFERENCES video_rental_dv.hub_rental(rental_hk)
+Referenced by:
+    TABLE "video_rental_dv.sat_rental_item_details" CONSTRAINT "fk_sat_rental_item_details" FOREIGN KEY (rental_copy_hk) REFERENCES video_rental_dv.link_rental_copy(rental_copy_hk)
+Access method: heap
+
+                                               Table "video_rental_dv.link_rental_customer"
+       Column       |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+--------------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ rental_customer_hk | character(32)               |           | not null |           | extended |             |              | 
+ rental_hk          | character(32)               |           | not null |           | extended |             |              | 
+ customer_hk        | character(32)               |           | not null |           | extended |             |              | 
+ load_dts           | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source      | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_link_rental_customer" PRIMARY KEY, btree (rental_customer_hk)
+    "ix_link_rental_customer_customer" btree (customer_hk)
+    "uq_link_rental_customer_bk" UNIQUE CONSTRAINT, btree (rental_hk, customer_hk)
+Foreign-key constraints:
+    "fk_link_rental_customer_customer" FOREIGN KEY (customer_hk) REFERENCES video_rental_dv.hub_customer(customer_hk)
+    "fk_link_rental_customer_rental" FOREIGN KEY (rental_hk) REFERENCES video_rental_dv.hub_rental(rental_hk)
+Access method: heap
+
+                                               Table "video_rental_dv.link_rental_employee"
+       Column       |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+--------------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ rental_employee_hk | character(32)               |           | not null |           | extended |             |              | 
+ rental_hk          | character(32)               |           | not null |           | extended |             |              | 
+ employee_hk        | character(32)               |           | not null |           | extended |             |              | 
+ load_dts           | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source      | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_link_rental_employee" PRIMARY KEY, btree (rental_employee_hk)
+    "ix_link_rental_employee_employee" btree (employee_hk)
+    "uq_link_rental_employee_bk" UNIQUE CONSTRAINT, btree (rental_hk, employee_hk)
+Foreign-key constraints:
+    "fk_link_rental_employee_employee" FOREIGN KEY (employee_hk) REFERENCES video_rental_dv.hub_employee(employee_hk)
+    "fk_link_rental_employee_rental" FOREIGN KEY (rental_hk) REFERENCES video_rental_dv.hub_rental(rental_hk)
+Access method: heap
+
+                                               Table "video_rental_dv.link_rental_payment"
+      Column       |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+-------------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ rental_payment_hk | character(32)               |           | not null |           | extended |             |              | 
+ rental_hk         | character(32)               |           | not null |           | extended |             |              | 
+ payment_hk        | character(32)               |           | not null |           | extended |             |              | 
+ load_dts          | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ record_source     | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_link_rental_payment" PRIMARY KEY, btree (rental_payment_hk)
+    "ix_link_rental_payment_payment" btree (payment_hk)
+    "uq_link_rental_payment_bk" UNIQUE CONSTRAINT, btree (rental_hk, payment_hk)
+Foreign-key constraints:
+    "fk_link_rental_payment_payment" FOREIGN KEY (payment_hk) REFERENCES video_rental_dv.hub_payment(payment_hk)
+    "fk_link_rental_payment_rental" FOREIGN KEY (rental_hk) REFERENCES video_rental_dv.hub_rental(rental_hk)
+Access method: heap
+
+                  Index "video_rental_dv.pk_hub_customer"
+   Column    |     Type      | Key? | Definition  | Storage  | Stats target 
+-------------+---------------+------+-------------+----------+--------------
+ customer_hk | character(32) | yes  | customer_hk | extended | 
+primary key, btree, for table "video_rental_dv.hub_customer"
+
+                  Index "video_rental_dv.pk_hub_employee"
+   Column    |     Type      | Key? | Definition  | Storage  | Stats target 
+-------------+---------------+------+-------------+----------+--------------
+ employee_hk | character(32) | yes  | employee_hk | extended | 
+primary key, btree, for table "video_rental_dv.hub_employee"
+
+                  Index "video_rental_dv.pk_hub_film"
+ Column  |     Type      | Key? | Definition | Storage  | Stats target 
+---------+---------------+------+------------+----------+--------------
+ film_hk | character(32) | yes  | film_hk    | extended | 
+primary key, btree, for table "video_rental_dv.hub_film"
+
+                  Index "video_rental_dv.pk_hub_genre"
+  Column  |     Type      | Key? | Definition | Storage  | Stats target 
+----------+---------------+------+------------+----------+--------------
+ genre_hk | character(32) | yes  | genre_hk   | extended | 
+primary key, btree, for table "video_rental_dv.hub_genre"
+
+                  Index "video_rental_dv.pk_hub_payment"
+   Column   |     Type      | Key? | Definition | Storage  | Stats target 
+------------+---------------+------+------------+----------+--------------
+ payment_hk | character(32) | yes  | payment_hk | extended | 
+primary key, btree, for table "video_rental_dv.hub_payment"
+
+                  Index "video_rental_dv.pk_hub_rental"
+  Column   |     Type      | Key? | Definition | Storage  | Stats target 
+-----------+---------------+------+------------+----------+--------------
+ rental_hk | character(32) | yes  | rental_hk  | extended | 
+primary key, btree, for table "video_rental_dv.hub_rental"
+
+                  Index "video_rental_dv.pk_hub_tariff"
+  Column   |     Type      | Key? | Definition | Storage  | Stats target 
+-----------+---------------+------+------------+----------+--------------
+ tariff_hk | character(32) | yes  | tariff_hk  | extended | 
+primary key, btree, for table "video_rental_dv.hub_tariff"
+
+               Index "video_rental_dv.pk_hub_video_copy"
+ Column  |     Type      | Key? | Definition | Storage  | Stats target 
+---------+---------------+------+------------+----------+--------------
+ copy_hk | character(32) | yes  | copy_hk    | extended | 
+primary key, btree, for table "video_rental_dv.hub_video_copy"
+
+                  Index "video_rental_dv.pk_link_film_copy"
+    Column    |     Type      | Key? |  Definition  | Storage  | Stats target 
+--------------+---------------+------+--------------+----------+--------------
+ film_copy_hk | character(32) | yes  | film_copy_hk | extended | 
+primary key, btree, for table "video_rental_dv.link_film_copy"
+
+                   Index "video_rental_dv.pk_link_film_genre"
+    Column     |     Type      | Key? |  Definition   | Storage  | Stats target 
+---------------+---------------+------+---------------+----------+--------------
+ film_genre_hk | character(32) | yes  | film_genre_hk | extended | 
+primary key, btree, for table "video_rental_dv.link_film_genre"
+
+                   Index "video_rental_dv.pk_link_film_tariff"
+     Column     |     Type      | Key? |   Definition   | Storage  | Stats target 
+----------------+---------------+------+----------------+----------+--------------
+ film_tariff_hk | character(32) | yes  | film_tariff_hk | extended | 
+primary key, btree, for table "video_rental_dv.link_film_tariff"
+
+                   Index "video_rental_dv.pk_link_rental_copy"
+     Column     |     Type      | Key? |   Definition   | Storage  | Stats target 
+----------------+---------------+------+----------------+----------+--------------
+ rental_copy_hk | character(32) | yes  | rental_copy_hk | extended | 
+primary key, btree, for table "video_rental_dv.link_rental_copy"
+
+                     Index "video_rental_dv.pk_link_rental_customer"
+       Column       |     Type      | Key? |     Definition     | Storage  | Stats target 
+--------------------+---------------+------+--------------------+----------+--------------
+ rental_customer_hk | character(32) | yes  | rental_customer_hk | extended | 
+primary key, btree, for table "video_rental_dv.link_rental_customer"
+
+                     Index "video_rental_dv.pk_link_rental_employee"
+       Column       |     Type      | Key? |     Definition     | Storage  | Stats target 
+--------------------+---------------+------+--------------------+----------+--------------
+ rental_employee_hk | character(32) | yes  | rental_employee_hk | extended | 
+primary key, btree, for table "video_rental_dv.link_rental_employee"
+
+                     Index "video_rental_dv.pk_link_rental_payment"
+      Column       |     Type      | Key? |    Definition     | Storage  | Stats target 
+-------------------+---------------+------+-------------------+----------+--------------
+ rental_payment_hk | character(32) | yes  | rental_payment_hk | extended | 
+primary key, btree, for table "video_rental_dv.link_rental_payment"
+
+                     Index "video_rental_dv.pk_sat_customer_contact"
+   Column    |            Type             | Key? | Definition  | Storage  | Stats target 
+-------------+-----------------------------+------+-------------+----------+--------------
+ customer_hk | character(32)               | yes  | customer_hk | extended | 
+ load_dts    | timestamp without time zone | yes  | load_dts    | plain    | 
+primary key, btree, for table "video_rental_dv.sat_customer_contact"
+
+                     Index "video_rental_dv.pk_sat_customer_details"
+   Column    |            Type             | Key? | Definition  | Storage  | Stats target 
+-------------+-----------------------------+------+-------------+----------+--------------
+ customer_hk | character(32)               | yes  | customer_hk | extended | 
+ load_dts    | timestamp without time zone | yes  | load_dts    | plain    | 
+primary key, btree, for table "video_rental_dv.sat_customer_details"
+
+                     Index "video_rental_dv.pk_sat_employee_details"
+   Column    |            Type             | Key? | Definition  | Storage  | Stats target 
+-------------+-----------------------------+------+-------------+----------+--------------
+ employee_hk | character(32)               | yes  | employee_hk | extended | 
+ load_dts    | timestamp without time zone | yes  | load_dts    | plain    | 
+primary key, btree, for table "video_rental_dv.sat_employee_details"
+
+                     Index "video_rental_dv.pk_sat_film_details"
+  Column  |            Type             | Key? | Definition | Storage  | Stats target 
+----------+-----------------------------+------+------------+----------+--------------
+ film_hk  | character(32)               | yes  | film_hk    | extended | 
+ load_dts | timestamp without time zone | yes  | load_dts   | plain    | 
+primary key, btree, for table "video_rental_dv.sat_film_details"
+
+                      Index "video_rental_dv.pk_sat_film_genre_details"
+    Column     |            Type             | Key? |  Definition   | Storage  | Stats target 
+---------------+-----------------------------+------+---------------+----------+--------------
+ film_genre_hk | character(32)               | yes  | film_genre_hk | extended | 
+ load_dts      | timestamp without time zone | yes  | load_dts      | plain    | 
+primary key, btree, for table "video_rental_dv.sat_film_genre_details"
+
+                     Index "video_rental_dv.pk_sat_genre_details"
+  Column  |            Type             | Key? | Definition | Storage  | Stats target 
+----------+-----------------------------+------+------------+----------+--------------
+ genre_hk | character(32)               | yes  | genre_hk   | extended | 
+ load_dts | timestamp without time zone | yes  | load_dts   | plain    | 
+primary key, btree, for table "video_rental_dv.sat_genre_details"
+
+                     Index "video_rental_dv.pk_sat_payment_details"
+   Column   |            Type             | Key? | Definition | Storage  | Stats target 
+------------+-----------------------------+------+------------+----------+--------------
+ payment_hk | character(32)               | yes  | payment_hk | extended | 
+ load_dts   | timestamp without time zone | yes  | load_dts   | plain    | 
+primary key, btree, for table "video_rental_dv.sat_payment_details"
+
+                     Index "video_rental_dv.pk_sat_rental_details"
+  Column   |            Type             | Key? | Definition | Storage  | Stats target 
+-----------+-----------------------------+------+------------+----------+--------------
+ rental_hk | character(32)               | yes  | rental_hk  | extended | 
+ load_dts  | timestamp without time zone | yes  | load_dts   | plain    | 
+primary key, btree, for table "video_rental_dv.sat_rental_details"
+
+                       Index "video_rental_dv.pk_sat_rental_item_details"
+     Column     |            Type             | Key? |   Definition   | Storage  | Stats target 
+----------------+-----------------------------+------+----------------+----------+--------------
+ rental_copy_hk | character(32)               | yes  | rental_copy_hk | extended | 
+ load_dts       | timestamp without time zone | yes  | load_dts       | plain    | 
+primary key, btree, for table "video_rental_dv.sat_rental_item_details"
+
+                     Index "video_rental_dv.pk_sat_tariff_details"
+  Column   |            Type             | Key? | Definition | Storage  | Stats target 
+-----------+-----------------------------+------+------------+----------+--------------
+ tariff_hk | character(32)               | yes  | tariff_hk  | extended | 
+ load_dts  | timestamp without time zone | yes  | load_dts   | plain    | 
+primary key, btree, for table "video_rental_dv.sat_tariff_details"
+
+                Index "video_rental_dv.pk_sat_video_copy_acquisition"
+  Column  |            Type             | Key? | Definition | Storage  | Stats target 
+----------+-----------------------------+------+------------+----------+--------------
+ copy_hk  | character(32)               | yes  | copy_hk    | extended | 
+ load_dts | timestamp without time zone | yes  | load_dts   | plain    | 
+primary key, btree, for table "video_rental_dv.sat_video_copy_acquisition"
+
+                  Index "video_rental_dv.pk_sat_video_copy_details"
+  Column  |            Type             | Key? | Definition | Storage  | Stats target 
+----------+-----------------------------+------+------------+----------+--------------
+ copy_hk  | character(32)               | yes  | copy_hk    | extended | 
+ load_dts | timestamp without time zone | yes  | load_dts   | plain    | 
+primary key, btree, for table "video_rental_dv.sat_video_copy_details"
+
+                                             Table "video_rental_dv.sat_customer_contact"
+    Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+---------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ customer_hk   | character(32)               |           | not null |           | extended |             |              | 
+ load_dts      | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ hashdiff      | character(32)               |           | not null |           | extended |             |              | 
+ phone         | character varying(20)       |           | not null |           | extended |             |              | 
+ email         | character varying(120)      |           |          |           | extended |             |              | 
+ address       | character varying(200)      |           |          |           | extended |             |              | 
+ status        | character varying(10)       |           | not null |           | extended |             |              | 
+ record_source | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_sat_customer_contact" PRIMARY KEY, btree (customer_hk, load_dts)
+    "ix_sat_customer_contact_ld" btree (load_dts)
+Foreign-key constraints:
+    "fk_sat_customer_contact" FOREIGN KEY (customer_hk) REFERENCES video_rental_dv.hub_customer(customer_hk)
+Access method: heap
+
+                                                                              Table "video_rental_dv.sat_customer_details"
+      Column       |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target |                                Description                                 
+-------------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+----------------------------------------------------------------------------
+ customer_hk       | character(32)               |           | not null |           | extended |             |              | 
+ load_dts          | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ hashdiff          | character(32)               |           | not null |           | extended |             |              | Хэш описательных атрибутов; изменение хэша означает появление новой версии
+ last_name         | character varying(60)       |           | not null |           | extended |             |              | 
+ first_name        | character varying(60)       |           | not null |           | extended |             |              | 
+ middle_name       | character varying(60)       |           |          |           | extended |             |              | 
+ birth_date        | date                        |           |          |           | plain    |             |              | 
+ registration_date | date                        |           | not null |           | plain    |             |              | 
+ record_source     | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_sat_customer_details" PRIMARY KEY, btree (customer_hk, load_dts)
+    "ix_sat_customer_details_ld" btree (load_dts)
+Foreign-key constraints:
+    "fk_sat_customer_details" FOREIGN KEY (customer_hk) REFERENCES video_rental_dv.hub_customer(customer_hk)
+Access method: heap
+
+                                             Table "video_rental_dv.sat_employee_details"
+     Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+----------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ employee_hk    | character(32)               |           | not null |           | extended |             |              | 
+ load_dts       | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ hashdiff       | character(32)               |           | not null |           | extended |             |              | 
+ last_name      | character varying(60)       |           | not null |           | extended |             |              | 
+ first_name     | character varying(60)       |           | not null |           | extended |             |              | 
+ middle_name    | character varying(60)       |           |          |           | extended |             |              | 
+ position       | character varying(40)       |           | not null |           | extended |             |              | 
+ phone          | character varying(20)       |           | not null |           | extended |             |              | 
+ hire_date      | date                        |           | not null |           | plain    |             |              | 
+ dismissal_date | date                        |           |          |           | plain    |             |              | 
+ status         | character varying(10)       |           | not null |           | extended |             |              | 
+ record_source  | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_sat_employee_details" PRIMARY KEY, btree (employee_hk, load_dts)
+    "ix_sat_employee_details_ld" btree (load_dts)
+Foreign-key constraints:
+    "fk_sat_employee_details" FOREIGN KEY (employee_hk) REFERENCES video_rental_dv.hub_employee(employee_hk)
+Access method: heap
+
+                                               Table "video_rental_dv.sat_film_details"
+     Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+----------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ film_hk        | character(32)               |           | not null |           | extended |             |              | 
+ load_dts       | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ hashdiff       | character(32)               |           | not null |           | extended |             |              | 
+ title          | character varying(200)      |           | not null |           | extended |             |              | 
+ original_title | character varying(200)      |           |          |           | extended |             |              | 
+ release_year   | smallint                    |           | not null |           | plain    |             |              | 
+ duration_min   | smallint                    |           | not null |           | plain    |             |              | 
+ age_rating     | character varying(8)        |           | not null |           | extended |             |              | 
+ media_type     | character varying(10)       |           | not null |           | extended |             |              | 
+ synopsis       | character varying(1000)     |           |          |           | extended |             |              | 
+ added_on       | date                        |           | not null |           | plain    |             |              | 
+ record_source  | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_sat_film_details" PRIMARY KEY, btree (film_hk, load_dts)
+    "ix_sat_film_details_ld" btree (load_dts)
+Foreign-key constraints:
+    "fk_sat_film_details" FOREIGN KEY (film_hk) REFERENCES video_rental_dv.hub_film(film_hk)
+Access method: heap
+
+                                            Table "video_rental_dv.sat_film_genre_details"
+    Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+---------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ film_genre_hk | character(32)               |           | not null |           | extended |             |              | 
+ load_dts      | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ hashdiff      | character(32)               |           | not null |           | extended |             |              | 
+ is_primary    | boolean                     |           | not null |           | plain    |             |              | 
+ record_source | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_sat_film_genre_details" PRIMARY KEY, btree (film_genre_hk, load_dts)
+    "ix_sat_film_genre_ld" btree (load_dts)
+Foreign-key constraints:
+    "fk_sat_film_genre_details" FOREIGN KEY (film_genre_hk) REFERENCES video_rental_dv.link_film_genre(film_genre_hk)
+Access method: heap
+
+                                              Table "video_rental_dv.sat_genre_details"
+    Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+---------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ genre_hk      | character(32)               |           | not null |           | extended |             |              | 
+ load_dts      | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ hashdiff      | character(32)               |           | not null |           | extended |             |              | 
+ name          | character varying(60)       |           | not null |           | extended |             |              | 
+ description   | character varying(300)      |           |          |           | extended |             |              | 
+ record_source | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_sat_genre_details" PRIMARY KEY, btree (genre_hk, load_dts)
+    "ix_sat_genre_details_ld" btree (load_dts)
+Foreign-key constraints:
+    "fk_sat_genre_details" FOREIGN KEY (genre_hk) REFERENCES video_rental_dv.hub_genre(genre_hk)
+Access method: heap
+
+                                             Table "video_rental_dv.sat_payment_details"
+    Column     |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+---------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ payment_hk    | character(32)               |           | not null |           | extended |             |              | 
+ load_dts      | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ hashdiff      | character(32)               |           | not null |           | extended |             |              | 
+ payment_date  | timestamp without time zone |           | not null |           | plain    |             |              | 
+ amount        | numeric(10,2)               |           | not null |           | main     |             |              | 
+ method        | character varying(10)       |           | not null |           | extended |             |              | 
+ payment_type  | character varying(10)       |           | not null |           | extended |             |              | 
+ record_source | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_sat_payment_details" PRIMARY KEY, btree (payment_hk, load_dts)
+    "ix_sat_payment_details_ld" btree (load_dts)
+Check constraints:
+    "ck_sat_payment_amount" CHECK (amount > 0::numeric)
+Foreign-key constraints:
+    "fk_sat_payment_details" FOREIGN KEY (payment_hk) REFERENCES video_rental_dv.hub_payment(payment_hk)
+Access method: heap
+
+                                                 Table "video_rental_dv.sat_rental_details"
+       Column        |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+---------------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ rental_hk           | character(32)               |           | not null |           | extended |             |              | 
+ load_dts            | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ hashdiff            | character(32)               |           | not null |           | extended |             |              | 
+ issue_date          | date                        |           | not null |           | plain    |             |              | 
+ planned_return_date | date                        |           | not null |           | plain    |             |              | 
+ actual_return_date  | date                        |           |          |           | plain    |             |              | 
+ deposit_amount      | numeric(10,2)               |           | not null |           | main     |             |              | 
+ status              | character varying(12)       |           | not null |           | extended |             |              | 
+ note                | character varying(300)      |           |          |           | extended |             |              | 
+ record_source       | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_sat_rental_details" PRIMARY KEY, btree (rental_hk, load_dts)
+    "ix_sat_rental_details_ld" btree (load_dts)
+Check constraints:
+    "ck_sat_rental_status" CHECK (status::text = ANY (ARRAY['issued'::character varying, 'closed'::character varying, 'cancelled'::character varying]::text[]))
+Foreign-key constraints:
+    "fk_sat_rental_details" FOREIGN KEY (rental_hk) REFERENCES video_rental_dv.hub_rental(rental_hk)
+Access method: heap
+
+                                              Table "video_rental_dv.sat_rental_item_details"
+       Column        |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+---------------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ rental_copy_hk      | character(32)               |           | not null |           | extended |             |              | 
+ load_dts            | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ hashdiff            | character(32)               |           | not null |           | extended |             |              | 
+ daily_rate          | numeric(8,2)                |           | not null |           | main     |             |              | 
+ status              | character varying(10)       |           | not null |           | extended |             |              | 
+ actual_return_date  | date                        |           |          |           | plain    |             |              | 
+ condition_on_return | character varying(12)       |           |          |           | extended |             |              | 
+ record_source       | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_sat_rental_item_details" PRIMARY KEY, btree (rental_copy_hk, load_dts)
+    "ix_sat_rental_item_ld" btree (load_dts)
+Check constraints:
+    "ck_sat_rental_item_return" CHECK ((status::text = 'returned'::text) = (actual_return_date IS NOT NULL))
+    "ck_sat_rental_item_status" CHECK (status::text = ANY (ARRAY['issued'::character varying, 'returned'::character varying]::text[]))
+Foreign-key constraints:
+    "fk_sat_rental_item_details" FOREIGN KEY (rental_copy_hk) REFERENCES video_rental_dv.link_rental_copy(rental_copy_hk)
+Access method: heap
+
+                                               Table "video_rental_dv.sat_tariff_details"
+      Column      |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+------------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ tariff_hk        | character(32)               |           | not null |           | extended |             |              | 
+ load_dts         | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ hashdiff         | character(32)               |           | not null |           | extended |             |              | 
+ name             | character varying(80)       |           | not null |           | extended |             |              | 
+ daily_rate       | numeric(8,2)                |           | not null |           | main     |             |              | 
+ max_rental_days  | smallint                    |           | not null |           | plain    |             |              | 
+ late_fee_per_day | numeric(8,2)                |           | not null |           | main     |             |              | 
+ valid_from       | date                        |           | not null |           | plain    |             |              | 
+ valid_to         | date                        |           |          |           | plain    |             |              | 
+ record_source    | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_sat_tariff_details" PRIMARY KEY, btree (tariff_hk, load_dts)
+    "ix_sat_tariff_details_ld" btree (load_dts)
+Check constraints:
+    "ck_sat_tariff_daily_rate" CHECK (daily_rate > 0::numeric)
+    "ck_sat_tariff_late_fee" CHECK (late_fee_per_day >= 0::numeric)
+Foreign-key constraints:
+    "fk_sat_tariff_details" FOREIGN KEY (tariff_hk) REFERENCES video_rental_dv.hub_tariff(tariff_hk)
+Access method: heap
+
+                                           Table "video_rental_dv.sat_video_copy_acquisition"
+      Column      |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+------------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ copy_hk          | character(32)               |           | not null |           | extended |             |              | 
+ load_dts         | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ hashdiff         | character(32)               |           | not null |           | extended |             |              | 
+ acquisition_date | date                        |           | not null |           | plain    |             |              | 
+ purchase_price   | numeric(10,2)               |           | not null |           | main     |             |              | 
+ record_source    | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_sat_video_copy_acquisition" PRIMARY KEY, btree (copy_hk, load_dts)
+    "ix_sat_copy_acquisition_ld" btree (load_dts)
+Foreign-key constraints:
+    "fk_sat_video_copy_acquisition" FOREIGN KEY (copy_hk) REFERENCES video_rental_dv.hub_video_copy(copy_hk)
+Access method: heap
+
+                                             Table "video_rental_dv.sat_video_copy_details"
+      Column      |            Type             | Collation | Nullable |  Default  | Storage  | Compression | Stats target | Description 
+------------------+-----------------------------+-----------+----------+-----------+----------+-------------+--------------+-------------
+ copy_hk          | character(32)               |           | not null |           | extended |             |              | 
+ load_dts         | timestamp without time zone |           | not null | lab.now() | plain    |             |              | 
+ hashdiff         | character(32)               |           | not null |           | extended |             |              | 
+ condition        | character varying(12)       |           | not null |           | extended |             |              | 
+ storage_location | character varying(20)       |           |          |           | extended |             |              | 
+ record_source    | character varying(50)       |           | not null |           | extended |             |              | 
+Indexes:
+    "pk_sat_video_copy_details" PRIMARY KEY, btree (copy_hk, load_dts)
+    "ix_sat_copy_details_ld" btree (load_dts)
+Check constraints:
+    "ck_sat_video_copy_condition" CHECK (condition::text = ANY (ARRAY['new'::character varying, 'good'::character varying, 'worn'::character varying, 'damaged'::character varying, 'written_off'::character varying]::text[]))
+Foreign-key constraints:
+    "fk_sat_video_copy_details" FOREIGN KEY (copy_hk) REFERENCES video_rental_dv.hub_video_copy(copy_hk)
+Access method: heap
+
+                     Index "video_rental_dv.uq_hub_customer_bk"
+   Column    |         Type          | Key? | Definition  | Storage  | Stats target 
+-------------+-----------------------+------+-------------+----------+--------------
+ card_number | character varying(12) | yes  | card_number | extended | 
+unique, btree, for table "video_rental_dv.hub_customer"
+
+                          Index "video_rental_dv.uq_hub_employee_bk"
+      Column      |         Type          | Key? |    Definition    | Storage  | Stats target 
+------------------+-----------------------+------+------------------+----------+--------------
+ personnel_number | character varying(10) | yes  | personnel_number | extended | 
+unique, btree, for table "video_rental_dv.hub_employee"
+
+                          Index "video_rental_dv.uq_hub_film_bk"
+     Column     |         Type          | Key? |   Definition   | Storage  | Stats target 
+----------------+-----------------------+------+----------------+----------+--------------
+ catalog_number | character varying(16) | yes  | catalog_number | extended | 
+unique, btree, for table "video_rental_dv.hub_film"
+
+                     Index "video_rental_dv.uq_hub_genre_bk"
+   Column   |         Type          | Key? | Definition | Storage  | Stats target 
+------------+-----------------------+------+------------+----------+--------------
+ genre_code | character varying(12) | yes  | genre_code | extended | 
+unique, btree, for table "video_rental_dv.hub_genre"
+
+                        Index "video_rental_dv.uq_hub_payment_bk"
+     Column     |         Type          | Key? |   Definition   | Storage  | Stats target 
+----------------+-----------------------+------+----------------+----------+--------------
+ payment_number | character varying(12) | yes  | payment_number | extended | 
+unique, btree, for table "video_rental_dv.hub_payment"
+
+                        Index "video_rental_dv.uq_hub_rental_bk"
+    Column     |         Type          | Key? |  Definition   | Storage  | Stats target 
+---------------+-----------------------+------+---------------+----------+--------------
+ rental_number | character varying(12) | yes  | rental_number | extended | 
+unique, btree, for table "video_rental_dv.hub_rental"
+
+                      Index "video_rental_dv.uq_hub_tariff_bk"
+   Column    |         Type          | Key? | Definition  | Storage  | Stats target 
+-------------+-----------------------+------+-------------+----------+--------------
+ tariff_code | character varying(12) | yes  | tariff_code | extended | 
+unique, btree, for table "video_rental_dv.hub_tariff"
+
+                       Index "video_rental_dv.uq_hub_video_copy_bk"
+     Column     |         Type          | Key? |   Definition   | Storage  | Stats target 
+----------------+-----------------------+------+----------------+----------+--------------
+ inventory_code | character varying(16) | yes  | inventory_code | extended | 
+unique, btree, for table "video_rental_dv.hub_video_copy"
+
+             Index "video_rental_dv.uq_link_film_copy_bk"
+ Column  |     Type      | Key? | Definition | Storage  | Stats target 
+---------+---------------+------+------------+----------+--------------
+ film_hk | character(32) | yes  | film_hk    | extended | 
+ copy_hk | character(32) | yes  | copy_hk    | extended | 
+unique, btree, for table "video_rental_dv.link_film_copy"
+
+             Index "video_rental_dv.uq_link_film_genre_bk"
+  Column  |     Type      | Key? | Definition | Storage  | Stats target 
+----------+---------------+------+------------+----------+--------------
+ film_hk  | character(32) | yes  | film_hk    | extended | 
+ genre_hk | character(32) | yes  | genre_hk   | extended | 
+unique, btree, for table "video_rental_dv.link_film_genre"
+
+             Index "video_rental_dv.uq_link_film_tariff_bk"
+  Column   |     Type      | Key? | Definition | Storage  | Stats target 
+-----------+---------------+------+------------+----------+--------------
+ film_hk   | character(32) | yes  | film_hk    | extended | 
+ tariff_hk | character(32) | yes  | tariff_hk  | extended | 
+unique, btree, for table "video_rental_dv.link_film_tariff"
+
+             Index "video_rental_dv.uq_link_rental_copy_bk"
+  Column   |     Type      | Key? | Definition | Storage  | Stats target 
+-----------+---------------+------+------------+----------+--------------
+ rental_hk | character(32) | yes  | rental_hk  | extended | 
+ copy_hk   | character(32) | yes  | copy_hk    | extended | 
+unique, btree, for table "video_rental_dv.link_rental_copy"
+
+             Index "video_rental_dv.uq_link_rental_customer_bk"
+   Column    |     Type      | Key? | Definition  | Storage  | Stats target 
+-------------+---------------+------+-------------+----------+--------------
+ rental_hk   | character(32) | yes  | rental_hk   | extended | 
+ customer_hk | character(32) | yes  | customer_hk | extended | 
+unique, btree, for table "video_rental_dv.link_rental_customer"
+
+             Index "video_rental_dv.uq_link_rental_employee_bk"
+   Column    |     Type      | Key? | Definition  | Storage  | Stats target 
+-------------+---------------+------+-------------+----------+--------------
+ rental_hk   | character(32) | yes  | rental_hk   | extended | 
+ employee_hk | character(32) | yes  | employee_hk | extended | 
+unique, btree, for table "video_rental_dv.link_rental_employee"
+
+            Index "video_rental_dv.uq_link_rental_payment_bk"
+   Column   |     Type      | Key? | Definition | Storage  | Stats target 
+------------+---------------+------+------------+----------+--------------
+ rental_hk  | character(32) | yes  | rental_hk  | extended | 
+ payment_hk | character(32) | yes  | payment_hk | extended | 
+unique, btree, for table "video_rental_dv.link_rental_payment"
+
+                          View "video_rental_dv.v_customer_contact_current"
+   Column    |            Type             | Collation | Nullable | Default | Storage  | Description 
+-------------+-----------------------------+-----------+----------+---------+----------+-------------
+ customer_hk | character(32)               |           |          |         | extended | 
+ load_dts    | timestamp without time zone |           |          |         | plain    | 
+ hashdiff    | character(32)               |           |          |         | extended | 
+ phone       | character varying(20)       |           |          |         | extended | 
+ email       | character varying(120)      |           |          |         | extended | 
+ address     | character varying(200)      |           |          |         | extended | 
+ status      | character varying(10)       |           |          |         | extended | 
+View definition:
+ SELECT DISTINCT ON (customer_hk) customer_hk,
+    load_dts,
+    hashdiff,
+    phone,
+    email,
+    address,
+    status
+   FROM video_rental_dv.sat_customer_contact
+  ORDER BY customer_hk, load_dts DESC;
+
+                                View "video_rental_dv.v_customer_current"
+      Column      |            Type             | Collation | Nullable | Default | Storage  | Description 
+------------------+-----------------------------+-----------+----------+---------+----------+-------------
+ customer_hk      | character(32)               |           |          |         | extended | 
+ card_number      | character varying(12)       |           |          |         | extended | 
+ last_name        | character varying(60)       |           |          |         | extended | 
+ first_name       | character varying(60)       |           |          |         | extended | 
+ middle_name      | character varying(60)       |           |          |         | extended | 
+ birth_date       | date                        |           |          |         | plain    | 
+ phone            | character varying(20)       |           |          |         | extended | 
+ email            | character varying(120)      |           |          |         | extended | 
+ address          | character varying(200)      |           |          |         | extended | 
+ status           | character varying(10)       |           |          |         | extended | 
+ details_load_dts | timestamp without time zone |           |          |         | plain    | 
+ contact_load_dts | timestamp without time zone |           |          |         | plain    | 
+View definition:
+ SELECT hc.customer_hk,
+    hc.card_number,
+    d.last_name,
+    d.first_name,
+    d.middle_name,
+    d.birth_date,
+    c.phone,
+    c.email,
+    c.address,
+    c.status,
+    d.load_dts AS details_load_dts,
+    c.load_dts AS contact_load_dts
+   FROM video_rental_dv.hub_customer hc
+     JOIN video_rental_dv.v_customer_details_current d ON d.customer_hk = hc.customer_hk
+     JOIN video_rental_dv.v_customer_contact_current c ON c.customer_hk = hc.customer_hk;
+
+                             View "video_rental_dv.v_customer_details_current"
+      Column       |            Type             | Collation | Nullable | Default | Storage  | Description 
+-------------------+-----------------------------+-----------+----------+---------+----------+-------------
+ customer_hk       | character(32)               |           |          |         | extended | 
+ load_dts          | timestamp without time zone |           |          |         | plain    | 
+ hashdiff          | character(32)               |           |          |         | extended | 
+ last_name         | character varying(60)       |           |          |         | extended | 
+ first_name        | character varying(60)       |           |          |         | extended | 
+ middle_name       | character varying(60)       |           |          |         | extended | 
+ birth_date        | date                        |           |          |         | plain    | 
+ registration_date | date                        |           |          |         | plain    | 
+View definition:
+ SELECT DISTINCT ON (customer_hk) customer_hk,
+    load_dts,
+    hashdiff,
+    last_name,
+    first_name,
+    middle_name,
+    birth_date,
+    registration_date
+   FROM video_rental_dv.sat_customer_details
+  ORDER BY customer_hk, load_dts DESC;
+
+                                View "video_rental_dv.v_employee_current"
+      Column      |            Type             | Collation | Nullable | Default | Storage  | Description 
+------------------+-----------------------------+-----------+----------+---------+----------+-------------
+ employee_hk      | character(32)               |           |          |         | extended | 
+ personnel_number | character varying(10)       |           |          |         | extended | 
+ load_dts         | timestamp without time zone |           |          |         | plain    | 
+ hashdiff         | character(32)               |           |          |         | extended | 
+ last_name        | character varying(60)       |           |          |         | extended | 
+ first_name       | character varying(60)       |           |          |         | extended | 
+ middle_name      | character varying(60)       |           |          |         | extended | 
+ position         | character varying(40)       |           |          |         | extended | 
+ phone            | character varying(20)       |           |          |         | extended | 
+ hire_date        | date                        |           |          |         | plain    | 
+ dismissal_date   | date                        |           |          |         | plain    | 
+ status           | character varying(10)       |           |          |         | extended | 
+View definition:
+ SELECT he.employee_hk,
+    he.personnel_number,
+    sd.load_dts,
+    sd.hashdiff,
+    sd.last_name,
+    sd.first_name,
+    sd.middle_name,
+    sd."position",
+    sd.phone,
+    sd.hire_date,
+    sd.dismissal_date,
+    sd.status
+   FROM video_rental_dv.hub_employee he
+     JOIN ( SELECT DISTINCT ON (sat_employee_details.employee_hk) sat_employee_details.employee_hk,
+            sat_employee_details.load_dts,
+            sat_employee_details.hashdiff,
+            sat_employee_details.last_name,
+            sat_employee_details.first_name,
+            sat_employee_details.middle_name,
+            sat_employee_details."position",
+            sat_employee_details.phone,
+            sat_employee_details.hire_date,
+            sat_employee_details.dismissal_date,
+            sat_employee_details.status,
+            sat_employee_details.record_source
+           FROM video_rental_dv.sat_employee_details
+          ORDER BY sat_employee_details.employee_hk, sat_employee_details.load_dts DESC) sd ON sd.employee_hk = he.employee_hk;
+
+                               View "video_rental_dv.v_film_current"
+     Column     |          Type           | Collation | Nullable | Default | Storage  | Description 
+----------------+-------------------------+-----------+----------+---------+----------+-------------
+ film_hk        | character(32)           |           |          |         | extended | 
+ catalog_number | character varying(16)   |           |          |         | extended | 
+ title          | character varying(200)  |           |          |         | extended | 
+ release_year   | smallint                |           |          |         | plain    | 
+ media_type     | character varying(10)   |           |          |         | extended | 
+ age_rating     | character varying(8)    |           |          |         | extended | 
+ duration_min   | smallint                |           |          |         | plain    | 
+ synopsis       | character varying(1000) |           |          |         | extended | 
+ added_on       | date                    |           |          |         | plain    | 
+View definition:
+ SELECT hf.film_hk,
+    hf.catalog_number,
+    sd.title,
+    sd.release_year,
+    sd.media_type,
+    sd.age_rating,
+    sd.duration_min,
+    sd.synopsis,
+    sd.added_on
+   FROM video_rental_dv.hub_film hf
+     JOIN ( SELECT DISTINCT ON (sat_film_details.film_hk) sat_film_details.film_hk,
+            sat_film_details.load_dts,
+            sat_film_details.hashdiff,
+            sat_film_details.title,
+            sat_film_details.original_title,
+            sat_film_details.release_year,
+            sat_film_details.duration_min,
+            sat_film_details.age_rating,
+            sat_film_details.media_type,
+            sat_film_details.synopsis,
+            sat_film_details.added_on,
+            sat_film_details.record_source
+           FROM video_rental_dv.sat_film_details
+          ORDER BY sat_film_details.film_hk, sat_film_details.load_dts DESC) sd ON sd.film_hk = hf.film_hk;
+
+                             View "video_rental_dv.v_genre_current"
+   Column    |          Type          | Collation | Nullable | Default | Storage  | Description 
+-------------+------------------------+-----------+----------+---------+----------+-------------
+ genre_hk    | character(32)          |           |          |         | extended | 
+ genre_code  | character varying(12)  |           |          |         | extended | 
+ name        | character varying(60)  |           |          |         | extended | 
+ description | character varying(300) |           |          |         | extended | 
+View definition:
+ SELECT hg.genre_hk,
+    hg.genre_code,
+    sd.name,
+    sd.description
+   FROM video_rental_dv.hub_genre hg
+     JOIN ( SELECT DISTINCT ON (sat_genre_details.genre_hk) sat_genre_details.genre_hk,
+            sat_genre_details.load_dts,
+            sat_genre_details.hashdiff,
+            sat_genre_details.name,
+            sat_genre_details.description,
+            sat_genre_details.record_source
+           FROM video_rental_dv.sat_genre_details
+          ORDER BY sat_genre_details.genre_hk, sat_genre_details.load_dts DESC) sd ON sd.genre_hk = hg.genre_hk;
+
+                                View "video_rental_dv.v_payment_current"
+     Column     |            Type             | Collation | Nullable | Default | Storage  | Description 
+----------------+-----------------------------+-----------+----------+---------+----------+-------------
+ payment_hk     | character(32)               |           |          |         | extended | 
+ payment_number | character varying(12)       |           |          |         | extended | 
+ payment_date   | timestamp without time zone |           |          |         | plain    | 
+ amount         | numeric(10,2)               |           |          |         | main     | 
+ method         | character varying(10)       |           |          |         | extended | 
+ payment_type   | character varying(10)       |           |          |         | extended | 
+View definition:
+ SELECT hp.payment_hk,
+    hp.payment_number,
+    sd.payment_date,
+    sd.amount,
+    sd.method,
+    sd.payment_type
+   FROM video_rental_dv.hub_payment hp
+     JOIN ( SELECT DISTINCT ON (sat_payment_details.payment_hk) sat_payment_details.payment_hk,
+            sat_payment_details.load_dts,
+            sat_payment_details.hashdiff,
+            sat_payment_details.payment_date,
+            sat_payment_details.amount,
+            sat_payment_details.method,
+            sat_payment_details.payment_type,
+            sat_payment_details.record_source
+           FROM video_rental_dv.sat_payment_details
+          ORDER BY sat_payment_details.payment_hk, sat_payment_details.load_dts DESC) sd ON sd.payment_hk = hp.payment_hk;
+
+                                View "video_rental_dv.v_rental_current"
+       Column        |          Type          | Collation | Nullable | Default | Storage  | Description 
+---------------------+------------------------+-----------+----------+---------+----------+-------------
+ rental_hk           | character(32)          |           |          |         | extended | 
+ rental_number       | character varying(12)  |           |          |         | extended | 
+ issue_date          | date                   |           |          |         | plain    | 
+ planned_return_date | date                   |           |          |         | plain    | 
+ actual_return_date  | date                   |           |          |         | plain    | 
+ deposit_amount      | numeric(10,2)          |           |          |         | main     | 
+ status              | character varying(12)  |           |          |         | extended | 
+ note                | character varying(300) |           |          |         | extended | 
+View definition:
+ SELECT hr.rental_hk,
+    hr.rental_number,
+    sd.issue_date,
+    sd.planned_return_date,
+    sd.actual_return_date,
+    sd.deposit_amount,
+    sd.status,
+    sd.note
+   FROM video_rental_dv.hub_rental hr
+     JOIN ( SELECT DISTINCT ON (sat_rental_details.rental_hk) sat_rental_details.rental_hk,
+            sat_rental_details.load_dts,
+            sat_rental_details.hashdiff,
+            sat_rental_details.issue_date,
+            sat_rental_details.planned_return_date,
+            sat_rental_details.actual_return_date,
+            sat_rental_details.deposit_amount,
+            sat_rental_details.status,
+            sat_rental_details.note,
+            sat_rental_details.record_source
+           FROM video_rental_dv.sat_rental_details
+          ORDER BY sat_rental_details.rental_hk, sat_rental_details.load_dts DESC) sd ON sd.rental_hk = hr.rental_hk;
+
+                                  View "video_rental_dv.v_rental_full"
+       Column        |          Type          | Collation | Nullable | Default | Storage  | Description 
+---------------------+------------------------+-----------+----------+---------+----------+-------------
+ rental_number       | character varying(12)  |           |          |         | extended | 
+ card_number         | character varying(12)  |           |          |         | extended | 
+ customer_name       | text                   |           |          |         | extended | 
+ personnel_number    | character varying(10)  |           |          |         | extended | 
+ employee_name       | text                   |           |          |         | extended | 
+ issue_date          | date                   |           |          |         | plain    | 
+ planned_return_date | date                   |           |          |         | plain    | 
+ actual_return_date  | date                   |           |          |         | plain    | 
+ status              | character varying(12)  |           |          |         | extended | 
+ inventory_code      | character varying(16)  |           |          |         | extended | 
+ title               | character varying(200) |           |          |         | extended | 
+ item_status         | character varying(10)  |           |          |         | extended | 
+ item_daily_rate     | numeric(8,2)           |           |          |         | main     | 
+ item_return_date    | date                   |           |          |         | plain    | 
+View definition:
+ SELECT hr.rental_number,
+    rc.card_number,
+    (rc.last_name::text || ' '::text) || rc.first_name::text AS customer_name,
+    he.personnel_number,
+    (he.last_name::text || ' '::text) || he.first_name::text AS employee_name,
+    rs.issue_date,
+    rs.planned_return_date,
+    rs.actual_return_date,
+    rs.status,
+    vc.inventory_code,
+    fc.title,
+    ris.status AS item_status,
+    ris.daily_rate AS item_daily_rate,
+    ris.actual_return_date AS item_return_date
+   FROM video_rental_dv.hub_rental hr
+     JOIN video_rental_dv.v_rental_current rs ON rs.rental_hk = hr.rental_hk
+     JOIN video_rental_dv.link_rental_customer lrc ON lrc.rental_hk = hr.rental_hk
+     JOIN video_rental_dv.v_customer_current rc ON rc.customer_hk = lrc.customer_hk
+     JOIN video_rental_dv.link_rental_employee lre ON lre.rental_hk = hr.rental_hk
+     JOIN video_rental_dv.v_employee_current he ON he.employee_hk = lre.employee_hk
+     LEFT JOIN video_rental_dv.v_rental_item_current ris ON ris.rental_hk = hr.rental_hk
+     LEFT JOIN video_rental_dv.v_video_copy_current vc ON vc.copy_hk = ris.copy_hk
+     LEFT JOIN video_rental_dv.link_film_copy lfc ON lfc.copy_hk = ris.copy_hk
+     LEFT JOIN video_rental_dv.v_film_current fc ON fc.film_hk = lfc.film_hk;
+
+                             View "video_rental_dv.v_rental_item_current"
+       Column        |         Type          | Collation | Nullable | Default | Storage  | Description 
+---------------------+-----------------------+-----------+----------+---------+----------+-------------
+ rental_copy_hk      | character(32)         |           |          |         | extended | 
+ rental_hk           | character(32)         |           |          |         | extended | 
+ copy_hk             | character(32)         |           |          |         | extended | 
+ daily_rate          | numeric(8,2)          |           |          |         | main     | 
+ status              | character varying(10) |           |          |         | extended | 
+ actual_return_date  | date                  |           |          |         | plain    | 
+ condition_on_return | character varying(12) |           |          |         | extended | 
+View definition:
+ SELECT lrc.rental_copy_hk,
+    lrc.rental_hk,
+    lrc.copy_hk,
+    sd.daily_rate,
+    sd.status,
+    sd.actual_return_date,
+    sd.condition_on_return
+   FROM video_rental_dv.link_rental_copy lrc
+     JOIN ( SELECT DISTINCT ON (sat_rental_item_details.rental_copy_hk) sat_rental_item_details.rental_copy_hk,
+            sat_rental_item_details.load_dts,
+            sat_rental_item_details.hashdiff,
+            sat_rental_item_details.daily_rate,
+            sat_rental_item_details.status,
+            sat_rental_item_details.actual_return_date,
+            sat_rental_item_details.condition_on_return,
+            sat_rental_item_details.record_source
+           FROM video_rental_dv.sat_rental_item_details
+          ORDER BY sat_rental_item_details.rental_copy_hk, sat_rental_item_details.load_dts DESC) sd ON sd.rental_copy_hk = lrc.rental_copy_hk;
+
+                              View "video_rental_dv.v_tariff_current"
+      Column      |         Type          | Collation | Nullable | Default | Storage  | Description 
+------------------+-----------------------+-----------+----------+---------+----------+-------------
+ tariff_hk        | character(32)         |           |          |         | extended | 
+ tariff_code      | character varying(12) |           |          |         | extended | 
+ name             | character varying(80) |           |          |         | extended | 
+ daily_rate       | numeric(8,2)          |           |          |         | main     | 
+ max_rental_days  | smallint              |           |          |         | plain    | 
+ late_fee_per_day | numeric(8,2)          |           |          |         | main     | 
+ valid_from       | date                  |           |          |         | plain    | 
+ valid_to         | date                  |           |          |         | plain    | 
+View definition:
+ SELECT ht.tariff_hk,
+    ht.tariff_code,
+    sd.name,
+    sd.daily_rate,
+    sd.max_rental_days,
+    sd.late_fee_per_day,
+    sd.valid_from,
+    sd.valid_to
+   FROM video_rental_dv.hub_tariff ht
+     JOIN ( SELECT DISTINCT ON (sat_tariff_details.tariff_hk) sat_tariff_details.tariff_hk,
+            sat_tariff_details.load_dts,
+            sat_tariff_details.hashdiff,
+            sat_tariff_details.name,
+            sat_tariff_details.daily_rate,
+            sat_tariff_details.max_rental_days,
+            sat_tariff_details.late_fee_per_day,
+            sat_tariff_details.valid_from,
+            sat_tariff_details.valid_to,
+            sat_tariff_details.record_source
+           FROM video_rental_dv.sat_tariff_details
+          ORDER BY sat_tariff_details.tariff_hk, sat_tariff_details.load_dts DESC) sd ON sd.tariff_hk = ht.tariff_hk;
+
+                                View "video_rental_dv.v_video_copy_current"
+       Column       |            Type             | Collation | Nullable | Default | Storage  | Description 
+--------------------+-----------------------------+-----------+----------+---------+----------+-------------
+ copy_hk            | character(32)               |           |          |         | extended | 
+ inventory_code     | character varying(16)       |           |          |         | extended | 
+ condition          | character varying(12)       |           |          |         | extended | 
+ storage_location   | character varying(20)       |           |          |         | extended | 
+ acquisition_date   | date                        |           |          |         | plain    | 
+ purchase_price     | numeric(10,2)               |           |          |         | main     | 
+ condition_load_dts | timestamp without time zone |           |          |         | plain    | 
+View definition:
+ SELECT hvc.copy_hk,
+    hvc.inventory_code,
+    sd.condition,
+    sd.storage_location,
+    sa.acquisition_date,
+    sa.purchase_price,
+    sd.load_dts AS condition_load_dts
+   FROM video_rental_dv.hub_video_copy hvc
+     JOIN ( SELECT DISTINCT ON (sat_video_copy_details.copy_hk) sat_video_copy_details.copy_hk,
+            sat_video_copy_details.load_dts,
+            sat_video_copy_details.hashdiff,
+            sat_video_copy_details.condition,
+            sat_video_copy_details.storage_location,
+            sat_video_copy_details.record_source
+           FROM video_rental_dv.sat_video_copy_details
+          ORDER BY sat_video_copy_details.copy_hk, sat_video_copy_details.load_dts DESC) sd ON sd.copy_hk = hvc.copy_hk
+     JOIN ( SELECT DISTINCT ON (sat_video_copy_acquisition.copy_hk) sat_video_copy_acquisition.copy_hk,
+            sat_video_copy_acquisition.load_dts,
+            sat_video_copy_acquisition.hashdiff,
+            sat_video_copy_acquisition.acquisition_date,
+            sat_video_copy_acquisition.purchase_price,
+            sat_video_copy_acquisition.record_source
+           FROM video_rental_dv.sat_video_copy_acquisition
+          ORDER BY sat_video_copy_acquisition.copy_hk, sat_video_copy_acquisition.load_dts DESC) sa ON sa.copy_hk = hvc.copy_hk;
+

@@ -1,0 +1,841 @@
+=== [0/6] Проверка контейнера PostgreSQL ===
+                                                          version                                                           
+----------------------------------------------------------------------------------------------------------------------------
+ PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+(1 row)
+
+
+=== [1/6] Создание схемы 3NF ===
+CREATE SCHEMA
+psql:<stdin>:16: NOTICE:  schema "lab" already exists, skipping
+CREATE FUNCTION
+CREATE FUNCTION
+COMMENT
+COMMENT
+COMMENT
+psql:<stdin>:31: NOTICE:  drop cascades to 16 other objects
+DETAIL:  drop cascades to table video_rental_3nf.genre
+drop cascades to table video_rental_3nf.tariff
+drop cascades to table video_rental_3nf.film
+drop cascades to table video_rental_3nf.film_genre
+drop cascades to table video_rental_3nf.video_copy
+drop cascades to table video_rental_3nf.customer
+drop cascades to table video_rental_3nf.employee
+drop cascades to table video_rental_3nf.rental
+drop cascades to table video_rental_3nf.rental_item
+drop cascades to table video_rental_3nf.payment
+drop cascades to function video_rental_3nf.trg_rental_item_sync()
+drop cascades to view video_rental_3nf.v_film_catalog
+drop cascades to view video_rental_3nf.v_copy_status
+drop cascades to view video_rental_3nf.v_active_rental
+drop cascades to view video_rental_3nf.v_rental_item_cost
+drop cascades to view video_rental_3nf.v_rental_total
+DROP SCHEMA
+CREATE SCHEMA
+COMMENT
+SET
+CREATE TABLE
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+CREATE TABLE
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+CREATE TABLE
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+CREATE TABLE
+COMMENT
+COMMENT
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+COMMENT
+COMMENT
+COMMENT
+CREATE INDEX
+CREATE TABLE
+COMMENT
+COMMENT
+COMMENT
+CREATE TABLE
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+COMMENT
+COMMENT
+COMMENT
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+COMMENT
+COMMENT
+COMMENT
+CREATE INDEX
+CREATE INDEX
+CREATE FUNCTION
+COMMENT
+CREATE TRIGGER
+CREATE VIEW
+COMMENT
+CREATE VIEW
+COMMENT
+CREATE VIEW
+COMMENT
+CREATE VIEW
+COMMENT
+CREATE VIEW
+COMMENT
+--- Схема 3NF создана. Перечень таблиц: ---
+ table_name  
+-------------
+ customer
+ employee
+ film
+ film_genre
+ genre
+ payment
+ rental
+ rental_item
+ tariff
+ video_copy
+(10 rows)
+
+
+=== [2/6] Создание схемы Data Vault ===
+psql:<stdin>:11: NOTICE:  drop cascades to 42 other objects
+DETAIL:  drop cascades to function video_rental_dv.dv_hash(text[])
+drop cascades to function video_rental_dv.dv_hashdiff(text[])
+drop cascades to table video_rental_dv.hub_customer
+drop cascades to table video_rental_dv.hub_employee
+drop cascades to table video_rental_dv.hub_film
+drop cascades to table video_rental_dv.hub_video_copy
+drop cascades to table video_rental_dv.hub_rental
+drop cascades to table video_rental_dv.hub_payment
+drop cascades to table video_rental_dv.hub_genre
+drop cascades to table video_rental_dv.hub_tariff
+drop cascades to table video_rental_dv.link_film_copy
+drop cascades to table video_rental_dv.link_film_genre
+drop cascades to table video_rental_dv.link_film_tariff
+drop cascades to table video_rental_dv.link_rental_customer
+drop cascades to table video_rental_dv.link_rental_employee
+drop cascades to table video_rental_dv.link_rental_copy
+drop cascades to table video_rental_dv.link_rental_payment
+drop cascades to table video_rental_dv.sat_customer_details
+drop cascades to table video_rental_dv.sat_customer_contact
+drop cascades to table video_rental_dv.sat_employee_details
+drop cascades to table video_rental_dv.sat_film_details
+drop cascades to table video_rental_dv.sat_video_copy_acquisition
+drop cascades to table video_rental_dv.sat_video_copy_details
+drop cascades to table video_rental_dv.sat_genre_details
+drop cascades to table video_rental_dv.sat_tariff_details
+drop cascades to table video_rental_dv.sat_rental_details
+drop cascades to table video_rental_dv.sat_rental_item_details
+drop cascades to table video_rental_dv.sat_payment_details
+drop cascades to table video_rental_dv.sat_film_genre_details
+drop cascades to view video_rental_dv.v_customer_details_current
+drop cascades to view video_rental_dv.v_customer_contact_current
+drop cascades to view video_rental_dv.v_customer_current
+drop cascades to view video_rental_dv.v_employee_current
+drop cascades to view video_rental_dv.v_film_current
+drop cascades to view video_rental_dv.v_video_copy_current
+drop cascades to view video_rental_dv.v_rental_current
+drop cascades to view video_rental_dv.v_payment_current
+drop cascades to view video_rental_dv.v_genre_current
+drop cascades to view video_rental_dv.v_tariff_current
+drop cascades to view video_rental_dv.v_rental_item_current
+drop cascades to view video_rental_dv.v_rental_full
+drop cascades to function video_rental_dv.dv_load_all(timestamp without time zone,character varying)
+DROP SCHEMA
+CREATE SCHEMA
+COMMENT
+SET
+CREATE FUNCTION
+COMMENT
+CREATE FUNCTION
+COMMENT
+CREATE TABLE
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+COMMENT
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE TABLE
+COMMENT
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+COMMENT
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+COMMENT
+CREATE FUNCTION
+COMMENT
+--- Схема Data Vault создана. Состав объектов: ---
+ vault_object_type | objects |                                                                                                                               object_list                                                                                                                               
+-------------------+---------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ HUB               |       8 | hub_customer, hub_employee, hub_film, hub_genre, hub_payment, hub_rental, hub_tariff, hub_video_copy
+ LINK              |       7 | link_film_copy, link_film_genre, link_film_tariff, link_rental_copy, link_rental_customer, link_rental_employee, link_rental_payment
+ SATELLITE         |      12 | sat_customer_contact, sat_customer_details, sat_employee_details, sat_film_details, sat_film_genre_details, sat_genre_details, sat_payment_details, sat_rental_details, sat_rental_item_details, sat_tariff_details, sat_video_copy_acquisition, sat_video_copy_details
+(3 rows)
+
+
+=== [3/6] Загрузка тестовых данных (3NF) ===
+SET
+TRUNCATE TABLE
+INSERT 0 7
+INSERT 0 4
+INSERT 0 10
+INSERT 0 19
+INSERT 0 16
+INSERT 0 6
+INSERT 0 3
+INSERT 0 6
+INSERT 0 9
+INSERT 0 10
+ setval 
+--------
+      7
+(1 row)
+
+ setval 
+--------
+      4
+(1 row)
+
+ setval 
+--------
+     10
+(1 row)
+
+ setval 
+--------
+     16
+(1 row)
+
+ setval 
+--------
+      6
+(1 row)
+
+ setval 
+--------
+      3
+(1 row)
+
+ setval 
+--------
+      6
+(1 row)
+
+ setval 
+--------
+      9
+(1 row)
+
+ setval 
+--------
+     10
+(1 row)
+
+--- Загружено строк (3NF) ---
+ table_name  | count 
+-------------+-------
+ customer    |     6
+ employee    |     3
+ film        |    10
+ film_genre  |    19
+ genre       |     7
+ payment     |    10
+ rental      |     6
+ rental_item |     9
+ tariff      |     4
+ video_copy  |    16
+(10 rows)
+
+--- Статусы операций проката (заполнены триггером) ---
+ rental_number | status | issue_date | planned_return_date | actual_return_date 
+---------------+--------+------------+---------------------+--------------------
+ RN-000001     | closed | 2026-08-10 | 2026-08-13          | 2026-08-12
+ RN-000002     | closed | 2026-08-20 | 2026-08-23          | 2026-08-27
+ RN-000003     | issued | 2026-09-26 | 2026-09-30          | 
+ RN-000004     | issued | 2026-09-15 | 2026-09-18          | 
+ RN-000005     | closed | 2026-09-01 | 2026-09-04          | 2026-09-03
+ RN-000006     | issued | 2026-09-22 | 2026-09-29          | 
+(6 rows)
+
+
+=== [4/6] Загрузка Data Vault и историзация Спутников ===
+SET
+=== Загрузка 1: первичное наполнение Data Vault (2026-09-28 08:00) ===
+        vault_object        | rows_inserted 
+----------------------------+---------------
+ hub_customer               |             6
+ hub_employee               |             3
+ hub_film                   |            10
+ hub_video_copy             |            16
+ hub_rental                 |             6
+ hub_payment                |            10
+ hub_genre                  |             7
+ hub_tariff                 |             4
+ link_film_copy             |            16
+ link_film_genre            |            19
+ link_film_tariff           |            10
+ link_rental_customer       |             6
+ link_rental_employee       |             6
+ link_rental_copy           |             9
+ link_rental_payment        |            10
+ sat_customer_details       |             6
+ sat_customer_contact       |             6
+ sat_employee_details       |             3
+ sat_film_details           |            10
+ sat_video_copy_acquisition |            16
+ sat_video_copy_details     |            16
+ sat_genre_details          |             7
+ sat_tariff_details         |             4
+ sat_rental_details         |             6
+ sat_rental_item_details    |             9
+ sat_payment_details        |            10
+ sat_film_genre_details     |            19
+(27 rows)
+
+--- Количество строк в Хабах после первичной загрузки ---
+      hub       | count 
+----------------+-------
+ hub_customer   |     6
+ hub_employee   |     3
+ hub_film       |    10
+ hub_genre      |     7
+ hub_payment    |    10
+ hub_rental     |     6
+ hub_tariff     |     4
+ hub_video_copy |    16
+(8 rows)
+
+--- Количество строк в Связях после первичной загрузки ---
+         link         | count 
+----------------------+-------
+ link_film_copy       |    16
+ link_film_genre      |    19
+ link_film_tariff     |    10
+ link_rental_copy     |     9
+ link_rental_customer |     6
+ link_rental_employee |     6
+ link_rental_payment  |    10
+(7 rows)
+
+=== Изменение данных в источнике (3NF) ===
+UPDATE 1
+UPDATE 1
+ card_number |    phone     |              address               
+-------------+--------------+------------------------------------
+ CR-00001    | +79161234599 | г. Москва, ул. Ленина, д. 1, кв. 6
+(1 row)
+
+ inventory_code | condition 
+----------------+-----------
+ VC-00005       | worn
+(1 row)
+
+=== Загрузка 2: изменение атрибутов (2026-09-28 09:15) ===
+        vault_object        | rows_inserted 
+----------------------------+---------------
+ hub_customer               |             0
+ hub_employee               |             0
+ hub_film                   |             0
+ hub_video_copy             |             0
+ hub_rental                 |             0
+ hub_payment                |             0
+ hub_genre                  |             0
+ hub_tariff                 |             0
+ link_film_copy             |             0
+ link_film_genre            |             0
+ link_film_tariff           |             0
+ link_rental_customer       |             0
+ link_rental_employee       |             0
+ link_rental_copy           |             0
+ link_rental_payment        |             0
+ sat_customer_details       |             0
+ sat_customer_contact       |             1
+ sat_employee_details       |             0
+ sat_film_details           |             0
+ sat_video_copy_acquisition |             0
+ sat_video_copy_details     |             1
+ sat_genre_details          |             0
+ sat_tariff_details         |             0
+ sat_rental_details         |             0
+ sat_rental_item_details    |             0
+ sat_payment_details        |             0
+ sat_film_genre_details     |             0
+(27 rows)
+
+--- История изменения контактов клиента CR-00001 (Спутник sat_customer_contact) ---
+ card_number |      load_dts       |    phone     |              address               | status |      record_source       
+-------------+---------------------+--------------+------------------------------------+--------+--------------------------
+ CR-00001    | 2026-09-28 08:00:00 | +79161234501 | г. Москва, ул. Ленина, д. 1, кв. 5 | active | video_rental_3nf#initial
+ CR-00001    | 2026-09-28 09:15:00 | +79161234599 | г. Москва, ул. Ленина, д. 1, кв. 6 | active | video_rental_3nf#daily
+(2 rows)
+
+--- История изменения состояния экземпляра VC-00005 (Спутник sat_video_copy_details) ---
+ inventory_code |      load_dts       | condition | storage_location |      record_source       
+----------------+---------------------+-----------+------------------+--------------------------
+ VC-00005       | 2026-09-28 08:00:00 | good      | Зал A, ст. 3     | video_rental_3nf#initial
+ VC-00005       | 2026-09-28 09:15:00 | worn      | Зал A, ст. 3     | video_rental_3nf#daily
+(2 rows)
+
+=== Новые бизнес-события в источнике (3NF) ===
+UPDATE 2
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+ rental_number | status | actual_return_date 
+---------------+--------+--------------------
+ RN-000001     | closed | 2026-08-12
+ RN-000002     | closed | 2026-08-27
+ RN-000003     | issued | 
+ RN-000004     | issued | 
+ RN-000005     | closed | 2026-09-03
+ RN-000006     | closed | 2026-09-28
+ RN-000007     | issued | 
+(7 rows)
+
+=== Загрузка 3: новые события и новые версии (2026-09-28 10:30) ===
+        vault_object        | rows_inserted 
+----------------------------+---------------
+ hub_customer               |             0
+ hub_employee               |             0
+ hub_film                   |             0
+ hub_video_copy             |             0
+ hub_rental                 |             1
+ hub_payment                |             1
+ hub_genre                  |             0
+ hub_tariff                 |             0
+ link_film_copy             |             0
+ link_film_genre            |             0
+ link_film_tariff           |             0
+ link_rental_customer       |             1
+ link_rental_employee       |             1
+ link_rental_copy           |             1
+ link_rental_payment        |             1
+ sat_customer_details       |             0
+ sat_customer_contact       |             0
+ sat_employee_details       |             0
+ sat_film_details           |             0
+ sat_video_copy_acquisition |             0
+ sat_video_copy_details     |             0
+ sat_genre_details          |             0
+ sat_tariff_details         |             0
+ sat_rental_details         |             2
+ sat_rental_item_details    |             3
+ sat_payment_details        |             1
+ sat_film_genre_details     |             0
+(27 rows)
+
+--- История изменения статуса проката RN-000006 (Спутник sat_rental_details) ---
+ rental_number |      load_dts       | status | planned_return_date | actual_return_date |      record_source       
+---------------+---------------------+--------+---------------------+--------------------+--------------------------
+ RN-000006     | 2026-09-28 08:00:00 | issued | 2026-09-29          |                    | video_rental_3nf#initial
+ RN-000006     | 2026-09-28 10:30:00 | closed | 2026-09-29          | 2026-09-28         | video_rental_3nf#daily
+(2 rows)
+
+--- История позиции проката: экземпляр VC-00002 в операции RN-000006 ---
+ rental_number | inventory_code |      load_dts       |  status  | actual_return_date | condition_on_return 
+---------------+----------------+---------------------+----------+--------------------+---------------------
+ RN-000006     | VC-00002       | 2026-09-28 08:00:00 | issued   |                    | 
+ RN-000006     | VC-00002       | 2026-09-28 10:30:00 | returned | 2026-09-28         | good
+(2 rows)
+
+--- Новый прокат RN-000007, собранный из Hub + Link + Satellite ---
+ rental_number | card_number | customer_name | personnel_number | employee_name | issue_date | planned_return_date | actual_return_date | status | inventory_code |  title  | item_status | item_daily_rate | item_return_date 
+---------------+-------------+---------------+------------------+---------------+------------+---------------------+--------------------+--------+----------------+---------+-------------+-----------------+------------------
+ RN-000007     | CR-00002    | Петрова Анна  | EMP-0001         | Егорова Мария | 2026-09-28 | 2026-10-01          |                    | issued | VC-00006       | Матрица | issued      |           90.00 | 
+(1 row)
+
+=== Загрузка 4: повторная загрузка без изменений (2026-09-28 11:00) ===
+ vault_object | rows_inserted 
+--------------+---------------
+(0 rows)
+
+(пустой результат выше означает, что ни один объект хранилища не изменился)
+--- Количество версий в Спутниках (историзация) ---
+         satellite          | versions | parents 
+----------------------------+----------+---------
+ sat_customer_contact       |        7 |       6
+ sat_customer_details       |        6 |       6
+ sat_employee_details       |        3 |       3
+ sat_film_details           |       10 |      10
+ sat_film_genre_details     |       19 |      19
+ sat_genre_details          |        7 |       7
+ sat_payment_details        |       11 |      11
+ sat_rental_details         |        8 |       7
+ sat_rental_item_details    |       12 |      10
+ sat_tariff_details         |        4 |       4
+ sat_video_copy_acquisition |       16 |      16
+ sat_video_copy_details     |       17 |      16
+(12 rows)
+
+
+=== [5/6] Проверочные запросы и проверка ограничений ===
+SET
+Pager usage is off.
+
+########################################################################
+# ЗАПРОС 1. Список активных прокатов
+########################################################################
+ rental_number |  customer_name  | employee_name | issue_date | planned_return_date | items_total | items_open | is_overdue | overdue_days 
+---------------+-----------------+---------------+------------+---------------------+-------------+------------+------------+--------------
+ RN-000004     | Кузнецова Ольга | Волков Игорь  | 2026-09-15 | 2026-09-18          |           1 |          1 | t          |           10
+ RN-000003     | Сидоров Максим  | Егорова Мария | 2026-09-26 | 2026-09-30          |           1 |          1 | f          |           -2
+ RN-000007     | Петрова Анна    | Егорова Мария | 2026-09-28 | 2026-10-01          |           1 |          1 | f          |           -3
+(3 rows)
+
+
+########################################################################
+# ЗАПРОС 2. Список просроченных экземпляров
+########################################################################
+ rental_number | card_number |  customer_name  |    phone     | inventory_code |   title    | planned_return_date | overdue_days | penalty_accrued 
+---------------+-------------+-----------------+--------------+----------------+------------+---------------------+--------------+-----------------
+ RN-000004     | CR-00004    | Кузнецова Ольга | +79161234504 | VC-00009       | Король Лев | 2026-09-18          |           10 |          400.00
+(1 row)
+
+
+########################################################################
+# ЗАПРОС 3. История прокатов конкретного клиента (CR-00002, Петрова Анна)
+########################################################################
+ rental_number | issue_date | planned_return_date | actual_return_date | status | items |                copies                
+---------------+------------+---------------------+--------------------+--------+-------+--------------------------------------
+ RN-000002     | 2026-08-20 | 2026-08-23          | 2026-08-27         | closed |     1 | VC-00004 (Терминатор 2: Судный день)
+ RN-000007     | 2026-09-28 | 2026-10-01          |                    | issued |     1 | VC-00006 (Матрица)
+(2 rows)
+
+
+########################################################################
+# ЗАПРОС 4. Доступные сейчас экземпляры
+########################################################################
+ inventory_code |           title           | condition | storage_location 
+----------------+---------------------------+-----------+------------------
+ VC-00003       | Крепкий орешек            | worn      | Зал A, ст. 2
+ VC-00011       | Начало                    | good      | Зал A, ст. 4
+ VC-00012       | Начало                    | worn      | Зал A, ст. 4
+ VC-00007       | Один дома                 | worn      | Зал B, ст. 1
+ VC-00008       | Один дома                 | damaged   | Зал B, ст. 1
+ VC-00013       | Планета Земля             | good      | Зал B, ст. 4
+ VC-00001       | Побег из Шоушенка         | good      | Зал A, ст. 1
+ VC-00002       | Побег из Шоушенка         | new       | Зал A, ст. 1
+ VC-00010       | Список Шиндлера           | good      | Зал B, ст. 3
+ VC-00014       | Тайна Коко                | new       | Зал A, ст. 5
+ VC-00015       | Тайна Коко                | good      | Зал A, ст. 5
+ VC-00004       | Терминатор 2: Судный день | good      | Зал A, ст. 3
+(12 rows)
+
+--- Сводка по фонду ---
+ copies_total | copies_rented | copies_available | copies_written_off 
+--------------+---------------+------------------+--------------------
+           16 |             3 |               12 |                  1
+(1 row)
+
+
+########################################################################
+# ЗАПРОС 5. Фильмы и их жанры
+########################################################################
+ catalog_number |           title           | release_year | media_type | tariff_code | daily_rate |           genres            | copies_total 
+----------------+---------------------------+--------------+------------+-------------+------------+-----------------------------+--------------
+ FM-0001        | Побег из Шоушенка         |         1994 | DVD        | CLAS        |      40.00 | Драма, Триллер              |            2
+ FM-0002        | Крепкий орешек            |         1988 | DVD        | CLAS        |      40.00 | Боевик, Триллер             |            2
+ FM-0003        | Терминатор 2: Судный день |         1991 | Blu-ray    | NEW         |      90.00 | Боевик, Фантастика          |            1
+ FM-0004        | Матрица                   |         1999 | Blu-ray    | NEW         |      90.00 | Боевик, Триллер, Фантастика |            2
+ FM-0005        | Один дома                 |         1990 | VHS        | STD         |      60.00 | Боевик, Комедия             |            2
+ FM-0006        | Король Лев                |         1994 | VHS        | STD         |      60.00 | Анимация, Драма             |            1
+ FM-0007        | Список Шиндлера           |         1993 | DVD        | CLAS        |      40.00 | Драма                       |            1
+ FM-0008        | Начало                    |         2010 | Blu-ray    | NEW         |      90.00 | Триллер, Фантастика         |            2
+ FM-0009        | Планета Земля             |         2006 | DVD        | STD         |      60.00 | Документальный              |            1
+ FM-0010        | Тайна Коко                |         2017 | Blu-ray    | NEW         |      90.00 | Анимация, Драма             |            2
+(10 rows)
+
+
+########################################################################
+# ЗАПРОС 6. Суммы платежей по операциям проката
+########################################################################
+ rental_number | status | rent_cost | paid_total | penalty_total | deposit_balance 
+---------------+--------+-----------+------------+---------------+-----------------
+ RN-000001     | closed |     80.00 |     400.00 |             0 |          320.00
+ RN-000002     | closed |    630.00 |    1050.00 |        120.00 |          300.00
+ RN-000003     | issued |    180.00 |     400.00 |             0 |          220.00
+ RN-000004     | issued |    520.00 |     300.00 |             0 |         -220.00
+ RN-000005     | closed |    480.00 |    1040.00 |             0 |          560.00
+ RN-000006     | closed |    780.00 |     600.00 |             0 |         -180.00
+ RN-000007     | issued |     90.00 |     300.00 |             0 |          210.00
+(7 rows)
+
+--- Итоги по способам оплаты ---
+  method  | payments | total_amount 
+----------+----------+--------------
+ card     |        7 |      2350.00
+ cash     |        2 |       700.00
+ transfer |        2 |      1040.00
+(3 rows)
+
+
+########################################################################
+# ЗАПРОС 7. Восстановление информации из Hub + Link + Satellite
+#           (эквивалент выборки 3NF)
+########################################################################
+ rental_number | card_number |  customer_name  | employee_name | issue_date | planned_return_date | status | inventory_code |           title           | item_status 
+---------------+-------------+-----------------+---------------+------------+---------------------+--------+----------------+---------------------------+-------------
+ RN-000001     | CR-00001    | Иванов Сергей   | Егорова Мария | 2026-08-10 | 2026-08-13          | closed | VC-00001       | Побег из Шоушенка         | returned
+ RN-000002     | CR-00002    | Петрова Анна    | Волков Игорь  | 2026-08-20 | 2026-08-23          | closed | VC-00004       | Терминатор 2: Судный день | returned
+ RN-000003     | CR-00003    | Сидоров Максим  | Егорова Мария | 2026-09-26 | 2026-09-30          | issued | VC-00005       | Матрица                   | issued
+ RN-000004     | CR-00004    | Кузнецова Ольга | Волков Игорь  | 2026-09-15 | 2026-09-18          | issued | VC-00009       | Король Лев                | issued
+ RN-000005     | CR-00005    | Смирнов Дмитрий | Егорова Мария | 2026-09-01 | 2026-09-04          | closed | VC-00011       | Начало                    | returned
+ RN-000005     | CR-00005    | Смирнов Дмитрий | Егорова Мария | 2026-09-01 | 2026-09-04          | closed | VC-00013       | Планета Земля             | returned
+ RN-000005     | CR-00005    | Смирнов Дмитрий | Егорова Мария | 2026-09-01 | 2026-09-04          | closed | VC-00014       | Тайна Коко                | returned
+ RN-000006     | CR-00006    | Морозов Артём   | Волков Игорь  | 2026-09-22 | 2026-09-29          | closed | VC-00002       | Побег из Шоушенка         | returned
+ RN-000006     | CR-00006    | Морозов Артём   | Волков Игорь  | 2026-09-22 | 2026-09-29          | closed | VC-00012       | Начало                    | returned
+ RN-000007     | CR-00002    | Петрова Анна    | Егорова Мария | 2026-09-28 | 2026-10-01          | issued | VC-00006       | Матрица                   | issued
+(10 rows)
+
+
+########################################################################
+# ЗАПРОС 8. Последняя версия записи Спутника (текущее состояние клиентов)
+########################################################################
+ card_number | last_name | first_name |    phone     |         email          |                 address                 | status  |   last_change_dts   
+-------------+-----------+------------+--------------+------------------------+-----------------------------------------+---------+---------------------
+ CR-00001    | Иванов    | Сергей     | +79161234599 | ivanov@example.com     | г. Москва, ул. Ленина, д. 1, кв. 6      | active  | 2026-09-28 09:15:00
+ CR-00002    | Петрова   | Анна       | +79161234502 | petrova@example.com    | г. Москва, ул. Мира, д. 14, кв. 62      | active  | 2026-09-28 08:00:00
+ CR-00003    | Сидоров   | Максим     | +79161234503 | sidorov@example.com    | г. Москва, пр. Вернадского, д. 33       | active  | 2026-09-28 08:00:00
+ CR-00004    | Кузнецова | Ольга      | +79161234504 | kuznetsova@example.com | г. Москва, ул. Строителей, д. 7, кв. 12 | active  | 2026-09-28 08:00:00
+ CR-00005    | Смирнов   | Дмитрий    | +79161234505 |                        | г. Москва, ул. Гагарина, д. 9           | active  | 2026-09-28 08:00:00
+ CR-00006    | Морозов   | Артём      | +79161234506 | morozov@example.com    | г. Москва, ул. Пушкина, д. 3, кв. 44    | blocked | 2026-09-28 08:00:00
+(6 rows)
+
+--- Последние версии состояния экземпляров ---
+ inventory_code |  condition  | storage_location | acquisition_date | purchase_price 
+----------------+-------------+------------------+------------------+----------------
+ VC-00001       | good        | Зал A, ст. 1     | 2024-02-06       |         450.00
+ VC-00002       | new         | Зал A, ст. 1     | 2025-02-10       |         520.00
+ VC-00003       | worn        | Зал A, ст. 2     | 2024-02-06       |         450.00
+ VC-00004       | good        | Зал A, ст. 3     | 2024-03-12       |         890.00
+ VC-00005       | worn        | Зал A, ст. 3     | 2024-03-12       |         890.00
+ VC-00006       | new         | Зал A, ст. 3     | 2025-03-01       |         950.00
+ VC-00007       | worn        | Зал B, ст. 1     | 2024-01-21       |         200.00
+ VC-00008       | damaged     | Зал B, ст. 1     | 2024-01-21       |         200.00
+ VC-00009       | good        | Зал B, ст. 2     | 2024-01-21       |         220.00
+ VC-00010       | good        | Зал B, ст. 3     | 2024-04-09       |         480.00
+ VC-00011       | good        | Зал A, ст. 4     | 2024-05-16       |         900.00
+ VC-00012       | worn        | Зал A, ст. 4     | 2024-05-16       |         900.00
+ VC-00013       | good        | Зал B, ст. 4     | 2024-06-03       |         300.00
+ VC-00014       | new         | Зал A, ст. 5     | 2025-01-15       |         980.00
+ VC-00015       | good        | Зал A, ст. 5     | 2025-01-15       |         980.00
+ VC-00016       | written_off | Архив            | 2024-02-06       |         450.00
+(16 rows)
+
+
+########################################################################
+# ЗАПРОС 9. История изменения объекта: клиент CR-00001 (телефон и адрес)
+########################################################################
+ card_number |      load_dts       |    phone     |              address               | status |             hashdiff             |      record_source       
+-------------+---------------------+--------------+------------------------------------+--------+----------------------------------+--------------------------
+ CR-00001    | 2026-09-28 08:00:00 | +79161234501 | г. Москва, ул. Ленина, д. 1, кв. 5 | active | 4272ee9344a657979d817c13c397d829 | video_rental_3nf#initial
+ CR-00001    | 2026-09-28 09:15:00 | +79161234599 | г. Москва, ул. Ленина, д. 1, кв. 6 | active | e96248628284e5270644c8cd542344fa | video_rental_3nf#daily
+(2 rows)
+
+--- История изменения состояния экземпляра VC-00005 ---
+ inventory_code |      load_dts       | condition | storage_location |             hashdiff             |      record_source       
+----------------+---------------------+-----------+------------------+----------------------------------+--------------------------
+ VC-00005       | 2026-09-28 08:00:00 | good      | Зал A, ст. 3     | fd079bc5fb0716b1f3faf2c116d04082 | video_rental_3nf#initial
+ VC-00005       | 2026-09-28 09:15:00 | worn      | Зал A, ст. 3     | 6357f92c6e47808f96b9f37f9ce95727 | video_rental_3nf#daily
+(2 rows)
+
+--- История изменения статуса проката RN-000006 ---
+ rental_number |      load_dts       | status | actual_return_date |      record_source       
+---------------+---------------------+--------+--------------------+--------------------------
+ RN-000006     | 2026-09-28 08:00:00 | issued |                    | video_rental_3nf#initial
+ RN-000006     | 2026-09-28 10:30:00 | closed | 2026-09-28         | video_rental_3nf#daily
+(2 rows)
+
+
+########################################################################
+# ЗАПРОС 10. Полный аудит: все объекты, загруженные каждым пакетом
+########################################################################
+      record_source       | hub_rows 
+--------------------------+----------
+ video_rental_3nf#daily   |        2
+ video_rental_3nf#initial |       62
+(2 rows)
+
+
+########################################################################
+# ПРОВЕРКА ОГРАНИЧЕНИЙ (негативные тесты)
+########################################################################
+psql:<stdin>:312: NOTICE:  ТЕСТ 1 (FK, 3NF): ссылка на несуществующего клиента отклонена. SQLSTATE=23503, insert or update on table "rental" violates foreign key constraint "fk_rental_customer"
+psql:<stdin>:312: NOTICE:  ТЕСТ 2 (CHECK, 3NF): отрицательная сумма платежа отклонена. SQLSTATE=23514, new row for relation "payment" violates check constraint "ck_payment_amount"
+psql:<stdin>:312: NOTICE:  ТЕСТ 3 (CHECK, 3NF): плановый возврат раньше выдачи отклонён. SQLSTATE=23514, new row for relation "rental" violates check constraint "ck_rental_issue_planned"
+psql:<stdin>:312: NOTICE:  ТЕСТ 4 (UNIQUE, 3NF): повтор номера клубной карты отклонён. SQLSTATE=23505, duplicate key value violates unique constraint "uq_customer_card_number"
+psql:<stdin>:312: NOTICE:  ТЕСТ 5 (частичный UNIQUE, 3NF): повторная выдача занятого экземпляра отклонена. SQLSTATE=23505, duplicate key value violates unique constraint "ux_rental_item_active_copy"
+psql:<stdin>:312: NOTICE:  ТЕСТ 6 (CHECK формата, 3NF): некорректный бизнес-ключ отклонён. SQLSTATE=23514, new row for relation "customer" violates check constraint "ck_customer_card_number"
+psql:<stdin>:312: NOTICE:  ТЕСТ 7 (PK/UNIQUE, Data Vault): повтор бизнес-ключа Хаба отклонён. SQLSTATE=23505, duplicate key value violates unique constraint "pk_hub_customer"
+psql:<stdin>:312: NOTICE:  ТЕСТ 8 (составной PK, Data Vault): повтор версии Спутника отклонён. SQLSTATE=23505, duplicate key value violates unique constraint "pk_sat_video_copy_details"
+psql:<stdin>:312: NOTICE:  ТЕСТ 9 (FK, Data Vault): Спутник без родительского Хаба отклонён. SQLSTATE=23503, insert or update on table "sat_film_details" violates foreign key constraint "fk_sat_film_details"
+psql:<stdin>:312: NOTICE:  ТЕСТ 10 (CHECK, Data Vault): отрицательная сумма платежа в Спутнике отклонена. SQLSTATE=23514, new row for relation "sat_payment_details" violates check constraint "ck_sat_payment_amount"
+DO
+--- Контроль: количество строк после негативных тестов не изменилось ---
+ customers | rentals | payments | dv_hub_customers | dv_copy_versions 
+-----------+---------+----------+------------------+------------------
+         6 |       7 |       11 |                6 |               17
+(1 row)
+
+
+########################################################################
+# ИТОГ: состав модели 3NF
+########################################################################
+ table_name  | columns | pk_count | fk_count | check_count 
+-------------+---------+----------+----------+-------------
+ customer    |      11 |        1 |        0 |          12
+ employee    |      10 |        1 |        0 |          13
+ film        |      11 |        1 |        1 |          14
+ film_genre  |       3 |        1 |        2 |           3
+ genre       |       4 |        1 |        0 |           4
+ payment     |       7 |        1 |        1 |          11
+ rental      |      10 |        1 |        2 |          14
+ rental_item |       7 |        1 |        2 |          10
+ tariff      |       8 |        1 |        0 |          11
+ video_copy  |       7 |        1 |        1 |           9
+(10 rows)
+
+
+########################################################################
+# ИТОГ: состав модели Data Vault
+########################################################################
+ object_type |         table_name         | columns | fk_count 
+-------------+----------------------------+---------+----------
+ HUB         | hub_customer               |       4 |        0
+ HUB         | hub_employee               |       4 |        0
+ HUB         | hub_film                   |       4 |        0
+ HUB         | hub_genre                  |       4 |        0
+ HUB         | hub_payment                |       4 |        0
+ HUB         | hub_rental                 |       4 |        0
+ HUB         | hub_tariff                 |       4 |        0
+ HUB         | hub_video_copy             |       4 |        0
+ LINK        | link_film_copy             |       5 |        2
+ LINK        | link_film_genre            |       5 |        2
+ LINK        | link_film_tariff           |       5 |        2
+ LINK        | link_rental_copy           |       5 |        2
+ LINK        | link_rental_customer       |       5 |        2
+ LINK        | link_rental_employee       |       5 |        2
+ LINK        | link_rental_payment        |       5 |        2
+ SATELLITE   | sat_customer_contact       |       8 |        1
+ SATELLITE   | sat_customer_details       |       9 |        1
+ SATELLITE   | sat_employee_details       |      12 |        1
+ SATELLITE   | sat_film_details           |      12 |        1
+ SATELLITE   | sat_film_genre_details     |       5 |        1
+ SATELLITE   | sat_genre_details          |       6 |        1
+ SATELLITE   | sat_payment_details        |       8 |        1
+ SATELLITE   | sat_rental_details         |      10 |        1
+ SATELLITE   | sat_rental_item_details    |       8 |        1
+ SATELLITE   | sat_tariff_details         |      10 |        1
+ SATELLITE   | sat_video_copy_acquisition |       6 |        1
+ SATELLITE   | sat_video_copy_details     |       6 |        1
+(27 rows)
+
+
+=== ВСЕ ПРОВЕРКИ ЗАВЕРШЕНЫ ===
+
+=== [6/6] Готово ===
