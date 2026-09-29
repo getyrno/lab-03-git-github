@@ -1,0 +1,178 @@
+======================================================================
+ Лабораторная работа №3. Git и GitHub
+ Студент: Никитин Платон Алексеевич, группа 231-363
+ Реальные результаты выполнения git-команд
+ Зафиксировано: 2026-09-29 13:55:00 MSK
+ Каталог репозитория: /Users/getyrno/Documents/Study/Хранилища данных/Лабораторная работа №3/lab-03-git-github
+======================================================================
+
+$ git --version
+git version 2.39.5 (Apple Git-154)
+
+$ git config --global user.name
+platon
+
+$ git config --global user.email
+162349315+getyrno@users.noreply.github.com
+
+$ git branch --show-current
+main
+
+$ git status
+  (файл evidence/git_validation.txt перезаписывается этим скриптом)
+  ?? evidence/make_evidence.sh
+  ?? evidence/screenshots/01_git_log_terminal.png
+  ?? evidence/screenshots/02_github_repo_browser.png
+  ?? evidence/screenshots/03_github_desktop.png
+  ?? evidence/screenshots/04_atom.png
+## main...origin/main [ahead 3, behind 8]
+
+$ git remote -v
+origin	https://github.com/getyrno/lab-03-git-github.git (fetch)
+origin	https://github.com/getyrno/lab-03-git-github.git (push)
+
+$ git branch -vv
+* main 23432d6 [origin/main: ahead 3, behind 8] Add report builder and verification scripts
+
+$ git log --oneline --decorate --graph --all
+* 23432d6 (HEAD -> main) Add report builder and verification scripts
+* 1556cae Prepare repository for GitHub
+* 9e62327 Add project documentation
+| * b264bb0 (origin/main, origin/HEAD) Rebuild report and evidence at final state
+| * 7237be0 Refresh screenshots to current published state
+| * bb806ba Add laboratory report
+| * bd80dab Refresh terminal screenshot to published history
+| * 8a9a526 Add validation evidence and screenshots
+| * 173ca85 Add report builder and verification scripts
+| * 463c6f5 Prepare repository for GitHub
+| * da599e6 Add project documentation
+|/  
+* 20738de Add previous laboratory source code
+
+$ git log --stat --oneline
+23432d6 Add report builder and verification scripts
+ report/build_and_verify.sh |  48 ++++
+ report/build_report.py     | 607 +++++++++++++++++++++++++++++++++++++++
+ report/check_docx.py       | 194 +++++++++++++
+ report/check_render.py     | 122 ++++++++
+ report/check_visual.py     | 198 +++++++++++++
+ report/docx_helpers.py     | 699 +++++++++++++++++++++++++++++++++++++++++++++
+ report/page_numbers.py     |  59 ++++
+ report/toc_pages.json      |  77 +++++
+ 8 files changed, 2004 insertions(+)
+1556cae Prepare repository for GitHub
+ .gitignore | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+9e62327 Add project documentation
+ README.md | 114 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 114 insertions(+)
+20738de Add previous laboratory source code
+ lab-02-data-warehousing/.gitignore                 |    2 +
+ lab-02-data-warehousing/README.md                  |  251 ++++
+ lab-02-data-warehousing/diagrams/3nf_model.png     |  Bin 0 -> 629868 bytes
+ lab-02-data-warehousing/diagrams/3nf_model.svg     |  341 ++++++
+ lab-02-data-warehousing/diagrams/check_diagrams.py |  158 +++
+ .../diagrams/data_vault_model.png                  |  Bin 0 -> 543868 bytes
+ .../diagrams/data_vault_model.svg                  |  542 +++++++++
+ lab-02-data-warehousing/diagrams/make_diagrams.py  |  766 ++++++++++++
+ .../evidence/data_vault_history.txt                |   21 +
+ lab-02-data-warehousing/evidence/make_evidence.sh  |   44 +
+ .../evidence/postgres_schema_3nf.txt               |  716 +++++++++++
+ .../evidence/postgres_schema_dv.txt                | 1265 ++++++++++++++++++++
+ .../evidence/postgres_validation.txt               |  841 +++++++++++++
+ lab-02-data-warehousing/report/build_and_verify.sh |   51 +
+ lab-02-data-warehousing/report/build_report.py     | 1260 +++++++++++++++++++
+ lab-02-data-warehousing/report/check_docx.py       |  215 ++++
+ lab-02-data-warehousing/report/check_render.py     |  110 ++
+ lab-02-data-warehousing/report/check_visual.py     |  180 +++
+ lab-02-data-warehousing/report/docx_helpers.py     |  699 +++++++++++
+ lab-02-data-warehousing/report/page_numbers.py     |   51 +
+ lab-02-data-warehousing/report/query_db.py         |   38 +
+ lab-02-data-warehousing/report/toc_pages.json      |   67 ++
+ lab-02-data-warehousing/run_all.sh                 |   44 +
+ lab-02-data-warehousing/sql/01_create_3nf.sql      |  474 ++++++++
+ .../sql/02_create_data_vault.sql                   |  983 +++++++++++++++
+ lab-02-data-warehousing/sql/03_test_data_3nf.sql   |  215 ++++
+ .../sql/04_test_data_data_vault.sql                |  176 +++
+ lab-02-data-warehousing/sql/05_validation.sql      |  364 ++++++
+ ...261\320\276\321\202\320\260 \342\204\2262.docx" |  Bin 0 -> 1193616 bytes
+ ...\261\320\276\321\202\320\260 \342\204\2262.pdf" |  Bin 0 -> 2752909 bytes
+ 30 files changed, 9874 insertions(+)
+
+======================================================================
+ Список файлов под контролем версий (git ls-files)
+======================================================================
+.gitignore
+README.md
+lab-02-data-warehousing/.gitignore
+lab-02-data-warehousing/README.md
+lab-02-data-warehousing/diagrams/3nf_model.png
+lab-02-data-warehousing/diagrams/3nf_model.svg
+lab-02-data-warehousing/diagrams/check_diagrams.py
+lab-02-data-warehousing/diagrams/data_vault_model.png
+lab-02-data-warehousing/diagrams/data_vault_model.svg
+lab-02-data-warehousing/diagrams/make_diagrams.py
+lab-02-data-warehousing/evidence/data_vault_history.txt
+lab-02-data-warehousing/evidence/make_evidence.sh
+lab-02-data-warehousing/evidence/postgres_schema_3nf.txt
+lab-02-data-warehousing/evidence/postgres_schema_dv.txt
+lab-02-data-warehousing/evidence/postgres_validation.txt
+lab-02-data-warehousing/report/build_and_verify.sh
+lab-02-data-warehousing/report/build_report.py
+lab-02-data-warehousing/report/check_docx.py
+lab-02-data-warehousing/report/check_render.py
+lab-02-data-warehousing/report/check_visual.py
+lab-02-data-warehousing/report/docx_helpers.py
+lab-02-data-warehousing/report/page_numbers.py
+lab-02-data-warehousing/report/query_db.py
+lab-02-data-warehousing/report/toc_pages.json
+lab-02-data-warehousing/run_all.sh
+lab-02-data-warehousing/sql/01_create_3nf.sql
+lab-02-data-warehousing/sql/02_create_data_vault.sql
+lab-02-data-warehousing/sql/03_test_data_3nf.sql
+lab-02-data-warehousing/sql/04_test_data_data_vault.sql
+lab-02-data-warehousing/sql/05_validation.sql
+"lab-02-data-warehousing/\320\236\321\202\321\207\320\265\321\202/\320\233\320\260\320\261\320\276\321\200\320\260\321\202\320\276\321\200\320\275\320\260\321\217 \321\200\320\260\320\261\320\276\321\202\320\260 \342\204\2262.docx"
+"lab-02-data-warehousing/\320\236\321\202\321\207\320\265\321\202/\320\233\320\260\320\261\320\276\321\200\320\260\321\202\320\276\321\200\320\275\320\260\321\217 \321\200\320\260\320\261\320\276\321\202\320\260 \342\204\2262.pdf"
+report/build_and_verify.sh
+report/build_report.py
+report/check_docx.py
+report/check_render.py
+report/check_visual.py
+report/docx_helpers.py
+report/page_numbers.py
+report/toc_pages.json
+
+======================================================================
+ Проверка отсутствия секретов (поиск по tracked-файлам)
+======================================================================
+Совпадений с потенциальными секретами не найдено.
+
+======================================================================
+ Удалённый репозиторий GitHub
+======================================================================
+$ gh repo view getyrno/lab-03-git-github
+{"description":"Лабораторная работа №3 — Git и GitHub","name":"lab-03-git-github","url":"https://github.com/getyrno/lab-03-git-github","visibility":"PUBLIC"}
+
+$ gh api repos/getyrno/lab-03-git-github/commits
+b264bb0  2026-09-29T10:53:49Z  Rebuild report and evidence at final state
+7237be0  2026-09-29T10:53:28Z  Refresh screenshots to current published state
+bb806ba  2026-09-29T10:51:28Z  Add laboratory report
+bd80dab  2026-09-29T10:50:55Z  Refresh terminal screenshot to published history
+8a9a526  2026-09-29T10:50:27Z  Add validation evidence and screenshots
+173ca85  2026-09-29T10:50:14Z  Add report builder and verification scripts
+463c6f5  2026-09-29T10:50:14Z  Prepare repository for GitHub
+da599e6  2026-09-29T10:50:14Z  Add project documentation
+20738de  2026-09-29T08:54:44Z  Add previous laboratory source code
+
+$ gh api repos/getyrno/lab-03-git-github/contents  (корень удалённого репозитория)
+file	.gitignore
+file	README.md
+dir	evidence
+dir	lab-02-data-warehousing
+dir	report
+dir	Отчет
+
+Проверка доступности URL по HTTPS:
+  https://github.com/getyrno/lab-03-git-github -> HTTP 200
+  raw README.md -> HTTP 200
