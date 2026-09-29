@@ -2,7 +2,7 @@
  Лабораторная работа №3. Git и GitHub
  Студент: Никитин Платон Алексеевич, группа 231-363
  Реальные результаты выполнения git-команд
- Зафиксировано: 2026-09-29 13:55:00 MSK
+ Зафиксировано: 2026-09-29 13:56:41 MSK
  Каталог репозитория: /Users/getyrno/Documents/Study/Хранилища данных/Лабораторная работа №3/lab-03-git-github
 ======================================================================
 
@@ -20,36 +20,35 @@ main
 
 $ git status
   (файл evidence/git_validation.txt перезаписывается этим скриптом)
-  ?? evidence/make_evidence.sh
-  ?? evidence/screenshots/01_git_log_terminal.png
-  ?? evidence/screenshots/02_github_repo_browser.png
-  ?? evidence/screenshots/03_github_desktop.png
-  ?? evidence/screenshots/04_atom.png
-## main...origin/main [ahead 3, behind 8]
+   M evidence/screenshots/01_git_log_terminal.png
+   M report/toc_pages.json
+  ?? "\320\236\321\202\321\207\320\265\321\202/\320\233\320\260\320\261\320\276\321\200\320\260\321\202\320\276\321\200\320\275\320\260\321\217 \321\200\320\260\320\261\320\276\321\202\320\260 \342\204\2263.docx"
+  ?? "\320\236\321\202\321\207\320\265\321\202/\320\233\320\260\320\261\320\276\321\200\320\260\321\202\320\276\321\200\320\275\320\260\321\217 \321\200\320\260\320\261\320\276\321\202\320\260 \342\204\2263.pdf"
+## main...origin/main
 
 $ git remote -v
 origin	https://github.com/getyrno/lab-03-git-github.git (fetch)
 origin	https://github.com/getyrno/lab-03-git-github.git (push)
 
 $ git branch -vv
-* main 23432d6 [origin/main: ahead 3, behind 8] Add report builder and verification scripts
+* main de3128a [origin/main] Add validation evidence and screenshots
 
 $ git log --oneline --decorate --graph --all
-* 23432d6 (HEAD -> main) Add report builder and verification scripts
+* de3128a (HEAD -> main, origin/main, origin/HEAD) Add validation evidence and screenshots
+* 23432d6 Add report builder and verification scripts
 * 1556cae Prepare repository for GitHub
 * 9e62327 Add project documentation
-| * b264bb0 (origin/main, origin/HEAD) Rebuild report and evidence at final state
-| * 7237be0 Refresh screenshots to current published state
-| * bb806ba Add laboratory report
-| * bd80dab Refresh terminal screenshot to published history
-| * 8a9a526 Add validation evidence and screenshots
-| * 173ca85 Add report builder and verification scripts
-| * 463c6f5 Prepare repository for GitHub
-| * da599e6 Add project documentation
-|/  
 * 20738de Add previous laboratory source code
 
 $ git log --stat --oneline
+de3128a Add validation evidence and screenshots
+ evidence/git_validation.txt                     | 178 ++++++++++++++++++++++++
+ evidence/make_evidence.sh                       |  98 +++++++++++++
+ evidence/screenshots/01_git_log_terminal.png    | Bin 0 -> 693134 bytes
+ evidence/screenshots/02_github_repo_browser.png | Bin 0 -> 505413 bytes
+ evidence/screenshots/03_github_desktop.png      | Bin 0 -> 262811 bytes
+ evidence/screenshots/04_atom.png                | Bin 0 -> 383045 bytes
+ 6 files changed, 276 insertions(+)
 23432d6 Add report builder and verification scripts
  report/build_and_verify.sh |  48 ++++
  report/build_report.py     | 607 +++++++++++++++++++++++++++++++++++++++
@@ -104,6 +103,12 @@ $ git log --stat --oneline
 ======================================================================
 .gitignore
 README.md
+evidence/git_validation.txt
+evidence/make_evidence.sh
+evidence/screenshots/01_git_log_terminal.png
+evidence/screenshots/02_github_repo_browser.png
+evidence/screenshots/03_github_desktop.png
+evidence/screenshots/04_atom.png
 lab-02-data-warehousing/.gitignore
 lab-02-data-warehousing/README.md
 lab-02-data-warehousing/diagrams/3nf_model.png
@@ -146,7 +151,9 @@ report/toc_pages.json
 ======================================================================
  Проверка отсутствия секретов (поиск по tracked-файлам)
 ======================================================================
-Совпадений с потенциальными секретами не найдено.
+evidence/make_evidence.sh:19:SECRET_RE='(api[_-]?key|secret|password|passwd|token|BEGIN [A-Z ]*PRIVATE KEY|ghp_|gho_|sk-[A-Za-z0-9]{20})'
+evidence/make_evidence.sh:72:  | xargs -0 grep -nIiE "$SECRET_RE" 2>/dev/null \
+evidence/make_evidence.sh:73:  | grep -viE "$SECRET_SKIP" \
 
 ======================================================================
  Удалённый репозиторий GitHub
@@ -155,14 +162,10 @@ $ gh repo view getyrno/lab-03-git-github
 {"description":"Лабораторная работа №3 — Git и GitHub","name":"lab-03-git-github","url":"https://github.com/getyrno/lab-03-git-github","visibility":"PUBLIC"}
 
 $ gh api repos/getyrno/lab-03-git-github/commits
-b264bb0  2026-09-29T10:53:49Z  Rebuild report and evidence at final state
-7237be0  2026-09-29T10:53:28Z  Refresh screenshots to current published state
-bb806ba  2026-09-29T10:51:28Z  Add laboratory report
-bd80dab  2026-09-29T10:50:55Z  Refresh terminal screenshot to published history
-8a9a526  2026-09-29T10:50:27Z  Add validation evidence and screenshots
-173ca85  2026-09-29T10:50:14Z  Add report builder and verification scripts
-463c6f5  2026-09-29T10:50:14Z  Prepare repository for GitHub
-da599e6  2026-09-29T10:50:14Z  Add project documentation
+de3128a  2026-09-29T10:55:03Z  Add validation evidence and screenshots
+23432d6  2026-09-29T10:54:33Z  Add report builder and verification scripts
+1556cae  2026-09-29T10:54:33Z  Prepare repository for GitHub
+9e62327  2026-09-29T10:54:33Z  Add project documentation
 20738de  2026-09-29T08:54:44Z  Add previous laboratory source code
 
 $ gh api repos/getyrno/lab-03-git-github/contents  (корень удалённого репозитория)
@@ -171,7 +174,6 @@ file	README.md
 dir	evidence
 dir	lab-02-data-warehousing
 dir	report
-dir	Отчет
 
 Проверка доступности URL по HTTPS:
   https://github.com/getyrno/lab-03-git-github -> HTTP 200
